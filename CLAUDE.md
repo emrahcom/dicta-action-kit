@@ -10,7 +10,7 @@ analysis on it, and the action repos use it to run plans end to end.
 
 - `specs/` is authoritative; code follows it. Specs are living documents: write
   only what the next task needs and update them whenever needed.
-- The action contracts (context format, capability format) are in
+- The action contracts (context format, capability format, plan format) are in
   `dicta-action-server`, the source of truth for all action repos. They are not
   copied here. Locally they are in `../dicta-action-server/specs/`, otherwise
   https://github.com/emrahcom/dicta-action-server/tree/main/specs
