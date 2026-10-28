@@ -1,15 +1,16 @@
 # dicta-action-kit
 
-The workshop for `dicta-action-harness`, the folder a developer opens their AI
-agent in to build the action layer of their site. This repo holds what it takes
-to create and maintain the harness: specs, tasks and a small test web app. The
-harness is developed and checked on the test web app, and the action repos use
-it to run plans end to end.
+The workshop for two repos that have no specs or tasks of their own:
 
-The harness files live in `../dicta-action-harness`, which has no specs or tasks
-of its own. Its tasks are here, and they change files there. Its `AGENTS.md` and
-`CLAUDE.md` are product content, the instructions a user's agent follows; they
-are not instructions for working on the harness.
+- `dicta-action-harness`: the folder a developer opens their AI agent in to
+  build the action layer of their site. Its `AGENTS.md` and `CLAUDE.md` are
+  product content, the instructions a user's agent follows; they are not
+  instructions for working on the harness.
+- `dicta-example-site`: a small web app that stands in for a developer's site.
+  The harness is developed and checked on it, the action repos use it to run
+  plans end to end, and users can try the harness on it.
+
+Their specs and tasks are here, and the tasks change files there.
 
 ## Specs and tasks
 
@@ -38,5 +39,5 @@ no body, no trailers. A task lands as up to three commits:
 - `chore: add task 2026-10-28-120000-project-skeleton`
 - `<type>: implement 2026-10-28-120000-project-skeleton`, with the type that
   fits the change. It also moves the task file to `tasks/done/`. When the task
-  changes `dicta-action-harness`, the harness gets a commit with the same
-  message.
+  changes `dicta-action-harness` or `dicta-example-site`, that repo gets a
+  commit with the same message.
