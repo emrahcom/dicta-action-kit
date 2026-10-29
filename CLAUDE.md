@@ -10,7 +10,10 @@ The workshop for two repos that have no specs or tasks of their own:
   The harness is developed and checked on it, the action repos use it to run
   plans end to end, and users can try the harness on it.
 
-Their specs and tasks are here, and the tasks change files there.
+Their specs and tasks are here, and the tasks change files there. Locally they
+are in `../dicta-action-harness/` and `../dicta-example-site/`, otherwise
+https://github.com/emrahcom/dicta-action-harness and
+https://github.com/emrahcom/dicta-example-site
 
 ## Specs and tasks
 
