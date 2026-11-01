@@ -15,6 +15,9 @@ are in `../dicta-action-harness/` and `../dicta-example-site/`, otherwise
 https://github.com/emrahcom/dicta-action-harness and
 https://github.com/emrahcom/dicta-example-site
 
+Accessibility, high test coverage, security and stability are first-class goals,
+for the harness and the example site too.
+
 ## Specs and tasks
 
 - `specs/` is authoritative; code follows it. Specs are living documents: write
