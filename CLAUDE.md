@@ -22,9 +22,10 @@ for the harness and the example site too.
 
 - `specs/` is authoritative; code follows it. Specs are living documents: write
   only what the next task needs and update them whenever needed.
-- The action contracts (context format, capability format, plan format) are in
-  `dicta-action-server`, the source of truth for all action repos. They are not
-  copied here. Locally they are in `../dicta-action-server/specs/`, otherwise
+- The action contracts (protocol, plan format, context format and capability
+  format) are in `dicta-action-server`, the source of truth for all action
+  repos. They are not copied here. Locally they are in
+  `../dicta-action-server/specs/`, otherwise
   https://github.com/emrahcom/dicta-action-server/tree/main/specs
 - Tasks are files in `tasks/open/` and `tasks/done/`, named
   `YYYY-MM-DD-HHMMSS-slug.md` (UTC). The folder is the status. `specs/tasks.md`
