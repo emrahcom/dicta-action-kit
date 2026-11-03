@@ -17,6 +17,6 @@
       "teamboard/*": ["../dicta-example-site/web/*.ts"]
     }
   },
-  "include": ["e2e", "playwright.config.ts"],
+  "include": ["e2e", "playwright.config.ts", "playwright.llm.config.ts"],
   "exclude": ["e2e/module/dist"]
 }

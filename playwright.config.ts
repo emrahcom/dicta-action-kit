@@ -3,6 +3,8 @@ import { JWT_SECRET, SERVER_PORT, SITE_PORT } from "./e2e/setup.ts";
 
 export default defineConfig({
   testDir: "e2e",
+  // The LLM check has its own config (playwright.llm.config.ts).
+  testIgnore: "**/llm/**",
   // The sibling repos, used as they are (specs/e2e.md, Setup).
   webServer: [
     {
