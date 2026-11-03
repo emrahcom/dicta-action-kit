@@ -43,5 +43,6 @@ about 15 cents. It runs only when you start it:
 ANTHROPIC_API_KEY=... npm run test:llm
 ```
 
-Without the key, the tests are skipped. Set `CLAUDE_MODEL` or `CLAUDE_EFFORT`
-to try another model or effort. The results are in `test-results/llm.json`.
+Without the key, the tests are skipped. Set `PLANNER_CLAUDE_MODEL` or
+`PLANNER_CLAUDE_EFFORT` to try another model or effort. The results are in
+`test-results/llm.json`.

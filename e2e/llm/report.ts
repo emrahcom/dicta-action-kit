@@ -3,7 +3,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import type { Change } from "./cases.ts";
-import { PLANNER, type Usage } from "./server.ts";
+import { SERVER_LOG, type Usage } from "./server.ts";
 
 export const RESULTS = "test-results/llm.json";
 
@@ -25,6 +25,13 @@ export type Result = {
   exchange?: unknown;
 };
 
+// The planner and its settings as the server logged them at startup, such as
+// "planner claude, model claude-opus-5-5, effort medium".
+function planner() {
+  const log = existsSync(SERVER_LOG) ? readFileSync(SERVER_LOG, "utf8") : "";
+  return /listening on port \d+, (.+)$/m.exec(log)?.[1] ?? "unknown planner";
+}
+
 // Playwright's global teardown: prints the table.
 export default function report() {
   if (!existsSync(RESULTS)) {
@@ -43,7 +50,7 @@ export default function report() {
   );
   console.log(
     [
-      `LLM check: ${PLANNER}, ${process.env.CLAUDE_MODEL || "default model"}, ${process.env.CLAUDE_EFFORT || "default effort"}`,
+      `LLM check: ${planner()}`,
       "result | rounds | time | input tokens | output tokens | case",
       ...rows,
     ].join("\n"),
