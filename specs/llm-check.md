@@ -71,3 +71,9 @@ An LLM does not answer the same way every time, so one run is a picture, not a
 verdict. For each failed case the report shows the reply and the history, and
 the cause is decided case by case: the prompt, the module, the site, or an
 accepted answer.
+
+Runs worth keeping, such as a comparison of planners, models or settings, are
+recorded in `docs/llm-check-results.md`, newest first. Each entry has its date,
+the commits of `dicta-action-server` and this repo it ran on, and for each
+setting: the cases passed, the average time per request, the cost of the run
+and the causes of the failures.
