@@ -17,11 +17,13 @@ instead of `stub`.
   costs money. It is not part of `test:e2e` or `check`.
 - `PLANNER` chooses the planner, `claude` by default, the only LLM planner
   today. Its own variables pass through to the server: for `claude`,
-  `ANTHROPIC_API_KEY`, `CLAUDE_MODEL` and `CLAUDE_EFFORT`. Without the planner's
-  key, the tests are skipped.
+  `ANTHROPIC_API_KEY`, `PLANNER_CLAUDE_MODEL` and `PLANNER_CLAUDE_EFFORT`
+  (`architecture.md` in `dicta-action-server`, Configuration). Without the
+  planner's key, the tests are skipped.
 - A run writes `test-results/llm.json` and prints a short table: for each
   request, passed or failed, the rounds, the time and the token counts from the
-  server's log.
+  server's log. Its header names the planner and its settings as the server
+  logged them at startup, so it shows what really ran.
 
 ## Cases
 
