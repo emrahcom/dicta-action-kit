@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "strict": true,
+    "noEmit": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"],
+    // The module imports the client and the site by these names; the page's
+    // import map gives the browser the same files (e2e/setup.ts).
+    "paths": {
+      "dicta-action-js": ["../dicta-action-js/dist/index.d.ts"],
+      "teamboard/*": ["../dicta-example-site/web/*.ts"]
+    }
+  },
+  "include": ["e2e", "playwright.config.ts"],
+  "exclude": ["e2e/module/dist"]
+}

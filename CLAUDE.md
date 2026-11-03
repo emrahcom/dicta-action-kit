@@ -34,6 +34,16 @@ for the harness and the example site too.
   `YYYY-MM-DD-HHMMSS-slug.md` (UTC). The folder is the status. `specs/tasks.md`
   defines the format, including how findings are handled.
 
+## Verification commands
+
+Run them after every change.
+
+- Format and type check: `npm run check`
+- Lint: `npm run lint`
+- End-to-end check: `npm run test:e2e` (Chromium, Firefox and WebKit)
+
+`npm run format` fixes formatting.
+
 ## User documents
 
 The README and other user documents use simple English: short sentences, common

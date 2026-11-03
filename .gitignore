@@ -1,1 +1,5 @@
 *.swp
+node_modules/
+e2e/module/dist/
+test-results/
+playwright-report/

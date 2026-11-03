@@ -1,0 +1,16 @@
+{
+  // Builds only the module for the browser: tsconfig.json checks it, with the
+  // client and the site it imports, and these files are not built again.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "noCheck": true,
+    "noResolve": true,
+    "allowImportingTsExtensions": false,
+    "types": [],
+    "rootDir": "e2e/module",
+    "outDir": "e2e/module/dist"
+  },
+  "include": ["e2e/module/teamboard.ts"],
+  "exclude": []
+}

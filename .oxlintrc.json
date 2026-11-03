@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "typescript/no-floating-promises": "warn",
+    "typescript/no-misused-promises": "warn",
+    "no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "ignoreRestSiblings": true }
+    ]
+  }
+}
