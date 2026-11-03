@@ -11,7 +11,8 @@ The workshop for two repos that have no specs or tasks of their own:
   plans end to end, and users can try the harness on it.
 
 It also holds the end-to-end check of the action repos, in `e2e/`
-(`specs/e2e.md`).
+(`specs/e2e.md`), and the check of the LLM planners with real requests, in
+`e2e/llm/` (`specs/llm-check.md`).
 
 Their specs and tasks are here, and the tasks change files there. Locally they
 are in `../dicta-action-harness/` and `../dicta-example-site/`, otherwise
