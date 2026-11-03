@@ -157,7 +157,7 @@ export const CASES: Case[] = [
     request: "Welche Aufgaben sind noch offen?",
     change: none,
     ends: "done",
-    says: ["Aufgabe"],
+    says: ["offen"],
   },
   {
     name: "remove a due date",
