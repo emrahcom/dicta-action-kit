@@ -13,9 +13,19 @@ the browser, so there is no other file to make.
 
 ## Contents
 
+- `docs/`: the guides, for the developer and for their agent alike, in simple
+  English. One file per topic:
+  - getting started: what the harness does and how to run it on a site;
+  - writing capabilities: the rules in "What it teaches", with reasons and
+    examples;
+  - adding dicta to the site: loading `dicta-action-js` and the module on every
+    page, running `dicta-action-server`, issuing tokens;
+  - checking the module: the check command and trying requests on the running
+    site.
 - `AGENTS.md`: the workflow the user's agent follows: study the site, list what
   its users can do, write the module, run the check, try it on the running
-  site. `CLAUDE.md` includes it.
+  site. It points to the guide for each step instead of repeating it.
+  `CLAUDE.md` includes it.
 - The contracts: a copy of `contract-capability.md`, `contract-context.md`,
   `contract-plan.md` and `contract-protocol.md` from `dicta-action-server`, in
   `contracts/`. A user's agent opens only the harness folder, so links to other
@@ -34,7 +44,7 @@ the browser, so there is no other file to make.
 
 ## What it teaches
 
-The harness teaches these, with the reasons and examples, in its own files:
+The harness teaches these, with the reasons and examples, in `docs/`:
 
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
