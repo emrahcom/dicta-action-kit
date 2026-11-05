@@ -4,6 +4,40 @@ Runs of the LLM check worth keeping, newest first (`specs/llm-check.md`). One
 run is a picture, not a verdict: the same setting can pass a case in one run
 and fail it in the next.
 
+## 2026-11-05: reply around text
+
+Sonnet 5.5 writes text around its JSON object (see 2026-11-03). Two fixes were
+tried. "Remove a due date" fails on purpose, as before, so 16 cases can pass.
+
+A stricter reply rule in the prompt, tried with a scratch change of each API
+request, not in a repo: "Think before you reply, never in the reply. If you
+find a mistake, fix it before you reply; never send a second object or a
+correction." and a closing line "Reply with one JSON object only." Sonnet 5.5
+passed 13 of 16 at low and 10 of 16 at medium, with 4 and 7 answers rejected:
+no better than before. Not adopted.
+
+Reading the last well-formed JSON object when the answer is not one object
+(`architecture-planner.md` in `dicta-action-server`, Reply format). The runs
+used `dicta-action-server` f9569be and this repo at d8736c5.
+
+| Model      | Effort | Passed  | From text | Per request | Cost  |
+| ---------- | ------ | ------- | --------- | ----------- | ----- |
+| Sonnet 5.5 | medium | 16 / 16 | 7         | 4.0 s       | $0.08 |
+| Opus 5.5   | medium | 16 / 16 | 0         | 4.7 s       | $0.16 |
+
+"From text" counts the replies read from text around them; "Per request" is the
+average time per request and "Cost" the cost of the run.
+
+The text around the object was reasoning ("I need Anna's id first."),
+corrections (a plan text in German for an English request, then "Wait, the
+reply must be in the user's language", then a second object) and tags such as
+`<invoke name="x"></invoke>`. In a scratch run before the change, the last
+object was the right one in all 15 such answers. The one answer it could not
+read was a good answer as plain text, with no JSON at all.
+
+Kept: Opus 5.5 at medium, the default. Sonnet 5.5 at medium now passes too, at
+about half the cost; it was not clearly faster.
+
 ## 2026-11-03: models and effort
 
 The `claude` planner with six settings, one run each. The runs used
