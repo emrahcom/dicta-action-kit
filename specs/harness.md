@@ -26,11 +26,6 @@ the browser, so there is no other file to make.
   its users can do, write the module, run the check, try it on the running
   site. It points to the guide for each step instead of repeating it.
   `CLAUDE.md` includes it.
-- The contracts: a copy of `contract-capability.md`, `contract-context.md`,
-  `contract-plan.md` and `contract-protocol.md` from `dicta-action-server`, in
-  `contracts/`. A user's agent opens only the harness folder, so links to other
-  repos do not help it. A line at the top of each copy names its source commit.
-  The copies are updated by a task here whenever a contract changes.
 - One check command, run on the module the agent wrote:
   - a type check against the types `dicta-action-js` exports;
   - the site context built from the module with `dicta-action-js`'s own
