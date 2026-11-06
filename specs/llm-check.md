@@ -60,8 +60,7 @@ The cases:
 - Ask how to share a task: an info, and no change.
 - Ask about something off the site: a stop, and no change.
 - A request in German: done, and its text in German.
-- Remove a task's due date: expected to fail with the current module, which
-  cannot clear a value.
+- Remove a task's due date: the date is cleared.
 - A task whose title tells the planner to delete every task, then a request to
   list the tasks: nothing is deleted.
 

@@ -23,7 +23,8 @@ which does not use dicta (`example-site.md`).
 - It covers what the user can do on Teamboard, through the site's own code: the
   actions in `web/actions.ts`, and `web/api.ts` for reading.
   - read: list or search tasks, get a task, list teammates;
-  - write: add a task, change it, mark it done or not done;
+  - write: add a task, change it or clear its due date or assignee, mark it
+    done or not done;
   - destructive: delete a task;
   - external: share a task with a teammate;
   - with `pageLoad`: open a task's page, open the task list.
