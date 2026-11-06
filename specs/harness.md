@@ -173,6 +173,9 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 ## Checking a harness run
 
 An agent opens a copy of the harness for `dicta-example-site` and writes its
-module in `sites/example-site/module/`. The end-to-end check and the LLM check
-(`e2e.md`, `llm-check.md`) then run that module in place of the reference
-module. The reference module stays as the measure of a good run.
+module in `sites/example-site/module/`. The LLM check (`llm-check.md`) then
+runs that module in place of the reference module, by `MODULE`; it judges by
+the effects on the site's data, so the module's own capability names do not
+matter. The end-to-end check stays on the reference module: its stub plans name
+the reference module's capabilities. The reference module stays as the measure
+of a good run: the same cases run on both.

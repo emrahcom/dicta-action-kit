@@ -7,9 +7,9 @@ and how fast and costly they are. It is run again after every change to a
 prompt, the module or the site, and the same cases compare planners, models and
 settings.
 
-It lives in `e2e/llm/` and reuses the end-to-end setup and the reference module
-(`e2e.md`). Only the planner differs: the server runs with an LLM planner
-instead of `stub`.
+It lives in `e2e/llm/` and reuses the end-to-end setup and, unless `MODULE`
+says otherwise (Running), the reference module (`e2e.md`). Only the planner
+differs: the server runs with an LLM planner instead of `stub`.
 
 ## Running
 
@@ -24,6 +24,13 @@ instead of `stub`.
   request, passed or failed, the rounds, the time and the token counts from the
   server's log. Its header names the planner and its settings as the server
   logged them at startup, so it shows what really ran.
+- `MODULE` runs a harness-made module in place of the reference module: the
+  path of a site's folder in a copy of the harness, such as
+  `../dicta-action-harness/sites/example-site` (`harness.md`, Checking a
+  harness run). Its `module/` files are compiled like the reference module,
+  and the import map gets the `paths` of its `module/tsconfig.local.json`, or
+  of its `module/tsconfig.json` when there is no local one. The table's header
+  names the module.
 
 ## Cases
 
