@@ -14,11 +14,10 @@ its own repo, with a task there.
 
 `e2e/module/` holds the capability module for Teamboard
 (`contract-capability.md` in `dicta-action-server`), written by hand to the
-contracts. It is what a good harness run should make for the example site.
-Later, with an LLM planner, a module the harness made can be checked with
-requests in plain words, by the outcome in the site's data. It stays here, not
-in the harness, where a user's agent might copy it, and not in the example site,
-which does not use dicta (`example-site.md`).
+contracts. It is what a good harness run should make for the example site
+(`harness.md`, Checking a harness run). It stays here, not in the harness, where
+a user's agent might copy it, and not in the example site, which does not use
+dicta (`example-site.md`).
 
 - It covers what the user can do on Teamboard, through the site's own code: the
   actions in `web/actions.ts`, and `web/api.ts` for reading.

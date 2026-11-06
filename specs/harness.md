@@ -95,10 +95,10 @@ through the steps.
     module of a site in production.
 - `AGENTS.md`: the workflow the user's agent follows: read the site's
   `notes.md`, or create the site's folder, study the site, list what its users
-  can do, write the module, run the check, try it on the running site,
-  integrate only when asked, and update the harness when asked. It points to
-  the guide for each step instead of repeating it.
-  `CLAUDE.md` includes it.
+  can do, write the module, run the check, integrate it when asked or guide the
+  developer through it, try it on the running site once the module is in it,
+  and update the harness when asked. It points to the guide for each step
+  instead of repeating it. `CLAUDE.md` includes it.
 - One check command, run on `sites/<name>/module/`:
   - a type check against the types `dicta-action-js` exports;
   - the site context built from the module with `dicta-action-js`'s own
