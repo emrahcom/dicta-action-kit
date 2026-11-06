@@ -113,7 +113,9 @@ site:
 - a type check of the module, against the types `dicta-action-js` exports and
   the site's code;
 - the site context built from the module with `dicta-action-js`'s own
-  `buildContext`, then checked with `dicta-action-server`'s own `checkContext`;
+  `buildContext`, then checked with `dicta-action-server`'s own `checkContext`,
+  and its size: at most 64 KB, the UTF-8 bytes of its JSON
+  (`contract-protocol.md` in `dicta-action-server`, Limits);
 - the module rules the types cannot express: `confirm` on every `write`,
   `destructive` and `external` capability, and `confirmOver`, when set, a whole
   number from 0;
