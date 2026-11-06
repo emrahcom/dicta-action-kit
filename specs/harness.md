@@ -61,6 +61,9 @@ through the steps.
 
 ## Contents
 
+- `README.md`: what the harness is, forking it and making a site's branch, and
+  where to start reading (`docs/`), in simple English.
+- `LICENSE`: Apache-2.0, as the other dicta repos.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
   - getting started: what the harness does, the site's branch and `site/`, and
