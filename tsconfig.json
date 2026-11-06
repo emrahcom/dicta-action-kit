@@ -18,5 +18,5 @@
     }
   },
   "include": ["e2e", "playwright.config.ts", "playwright.llm.config.ts"],
-  "exclude": ["e2e/module/dist"]
+  "exclude": ["e2e/module/dist", "e2e/harness/sites"]
 }

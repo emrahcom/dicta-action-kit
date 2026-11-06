@@ -1,6 +1,14 @@
 {
+  "ignorePatterns": ["e2e/harness/sites"],
   "rules": {
-    "typescript/no-floating-promises": "warn",
+    "typescript/no-floating-promises": [
+      "warn",
+      {
+        "allowForKnownSafeCalls": [
+          { "from": "package", "name": "test", "package": "node:test" }
+        ]
+      }
+    ],
     "typescript/no-misused-promises": "warn",
     "no-unused-vars": [
       "warn",
