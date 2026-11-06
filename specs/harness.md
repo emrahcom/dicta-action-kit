@@ -148,6 +148,13 @@ with `tsx`, for trying requests on the running site. Its settings come from a
 
 The harness teaches these, with the reasons and examples, in `docs/`:
 
+- The guides teach what a module needs; the full rules are in the contracts of
+  the server version the harness pins, in
+  `node_modules/dicta-action-server/specs/` (`architecture.md` in
+  `dicta-action-server`, Site context): `contract-capability.md`,
+  `contract-context.md` and, for confirmations and limits, `contract-plan.md`.
+  When a guide and a contract differ, the contract is right, and the agent
+  tells the developer.
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
 - Outputs carry the names users know next to ids, such as an assignee's name.
