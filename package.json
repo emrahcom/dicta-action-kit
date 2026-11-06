@@ -14,7 +14,7 @@
     "lint:fix": "oxlint --type-aware --fix",
     "test:e2e": "npm run build && playwright test",
     "test:llm": "npm run build && playwright test -c playwright.llm.config.ts",
-    "test:harness": "node --test --test-timeout=120000 e2e/harness/check.test.ts"
+    "test:harness": "node --test --test-timeout=120000 e2e/harness/check.test.ts e2e/harness/server.test.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",
