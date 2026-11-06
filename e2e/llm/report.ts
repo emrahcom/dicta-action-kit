@@ -3,6 +3,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import type { Change } from "./cases.ts";
+import { HARNESS_SITE_DIR } from "./harness-site.ts";
 import { SERVER_LOG, type Usage } from "./server.ts";
 
 export const RESULTS = "test-results/llm.json";
@@ -50,7 +51,7 @@ export default function report() {
   );
   console.log(
     [
-      `LLM check: ${planner()}`,
+      `LLM check: ${planner()}, module ${HARNESS_SITE_DIR ?? "reference"}`,
       "result | rounds | time | input tokens | output tokens | case",
       ...rows,
     ].join("\n"),

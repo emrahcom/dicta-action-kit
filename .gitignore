@@ -1,6 +1,7 @@
 *.swp
 node_modules/
 e2e/module/dist/
+e2e/module/harness-dist/
 test-results/
 playwright-report/
 llm-server.log

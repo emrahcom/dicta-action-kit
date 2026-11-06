@@ -2,9 +2,11 @@
 // dicta-action-js, the module and the element; getToken signs test tokens; the
 // store is reset before each test.
 
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test as base, expect, type Page } from "@playwright/test";
 import { SignJWT } from "jose";
+import { HARNESS_DIST, harnessImports } from "./llm/harness-site.ts";
 
 export { expect };
 
@@ -17,28 +19,45 @@ const SERVER = `http://localhost:${SERVER_PORT}`;
 const CLIENT_DIST = new URL("../../dicta-action-js/dist/", import.meta.url);
 const MODULE_DIST = new URL("module/dist/", import.meta.url);
 
+// The module the pages get: the reference module, or a harness-made one when
+// the LLM check sets harnessSite (llm/harness-site.ts).
+function moduleFor(harnessSite: string | undefined) {
+  if (harnessSite === undefined) {
+    return {
+      dist: fileURLToPath(MODULE_DIST),
+      entry: "/e2e/module/teamboard.js",
+      imports: {
+        "teamboard/actions": "/dist/actions.js",
+        "teamboard/api": "/dist/api.js",
+      },
+    };
+  }
+  return {
+    dist: HARNESS_DIST,
+    entry: "/e2e/module/index.js",
+    imports: harnessImports(harnessSite),
+  };
+}
+
 // Added to the start of each page's head. The import map gives the module the
 // client and the site's own built files under the names it imports.
-const SETUP = `
-<script type="importmap">
-  {
-    "imports": {
-      "dicta-action-js": "/e2e/dicta-action-js/index.js",
-      "teamboard/actions": "/dist/actions.js",
-      "teamboard/api": "/dist/api.js"
-    }
-  }
-</script>
+function setup(entry: string, imports: Record<string, string>) {
+  const map = {
+    imports: { "dicta-action-js": "/e2e/dicta-action-js/index.js", ...imports },
+  };
+  return `
+<script type="importmap">${JSON.stringify(map)}</script>
 <script type="module">
   import "dicta-action-js";
-  import teamboard from "/e2e/module/teamboard.js";
+  import module from "${entry}";
   const element = document.createElement("dicta-action");
   element.setAttribute("server", "${SERVER}");
-  element.module = teamboard;
+  element.module = module;
   element.getToken = () => window.dictaToken();
   document.body.append(element);
 </script>
 `;
+}
 
 function isPage(url: URL) {
   return url.pathname === "/" || /^\/tasks\/[^/]+$/.test(url.pathname);
@@ -53,22 +72,28 @@ async function token(expired: boolean) {
     .sign(new TextEncoder().encode(JWT_SECRET));
 }
 
-export const test = base.extend({
-  page: async ({ page, request }, use) => {
+export const test = base.extend<{ harnessSite: string | undefined }>({
+  // Set only by the LLM check, from HARNESS_SITE_DIR.
+  harnessSite: [undefined, { option: true }],
+  page: async ({ page, request, harnessSite }, use) => {
+    const module = moduleFor(harnessSite);
+    const head = setup(module.entry, module.imports);
     await request.post(`${SITE}/api/reset`);
     await page.route(isPage, async (route) => {
       const response = await route.fetch();
-      const html = (await response.text()).replace("<head>", `<head>${SETUP}`);
+      const html = (await response.text()).replace("<head>", `<head>${head}`);
       await route.fulfill({
         contentType: "text/html; charset=utf-8",
         body: html,
       });
     });
     await page.route(`${SITE}/e2e/dicta-action-js/**`, (route) =>
-      route.fulfill({ path: fileFor(route.request().url(), CLIENT_DIST) }),
+      route.fulfill({
+        path: fileFor(route.request().url(), fileURLToPath(CLIENT_DIST)),
+      }),
     );
     await page.route(`${SITE}/e2e/module/**`, (route) =>
-      route.fulfill({ path: fileFor(route.request().url(), MODULE_DIST) }),
+      route.fulfill({ path: fileFor(route.request().url(), module.dist) }),
     );
     let tokens = 0;
     await page.exposeFunction("dictaToken", () => token(tokens++ === 0));
@@ -76,10 +101,14 @@ export const test = base.extend({
   },
 });
 
-// The local file for a served path such as /e2e/module/teamboard.js.
-function fileFor(url: string, dist: URL) {
-  const name = new URL(url).pathname.split("/").pop() ?? "";
-  return fileURLToPath(new URL(name, dist));
+// The local file for a served path such as /e2e/module/teamboard.js: the
+// path after /e2e/<folder>/, in dist.
+function fileFor(url: string, dist: string) {
+  const parts = new URL(url).pathname.split("/").slice(3);
+  if (parts.includes("..")) {
+    throw new Error(`no such file: ${url}`);
+  }
+  return join(dist, ...parts);
 }
 
 // Opens the task list and waits until the element has its module.
