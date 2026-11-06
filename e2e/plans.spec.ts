@@ -59,7 +59,7 @@ test("a plan reads tasks for the planner, and done says what it found", async ({
                 title: "Send the invoice to Nordwind",
                 due: "2026-11-02",
                 done: true,
-                assignee: "anna",
+                assignee: { id: "anna", name: "Anna Weber" },
               },
             ],
           },

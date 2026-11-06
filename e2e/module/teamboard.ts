@@ -4,7 +4,13 @@
 
 import { type CapabilityModule, dictaCapabilities } from "dicta-action-js";
 import * as actions from "teamboard/actions";
-import { getTask, listTasks, listTeammates, type Task } from "teamboard/api";
+import {
+  getTask,
+  listTasks,
+  listTeammates,
+  type Task,
+  type Teammate,
+} from "teamboard/api";
 
 type Id = { id: string };
 
@@ -31,13 +37,30 @@ const taskOutput = {
     title: { type: "string" },
     due: { type: ["string", "null"], description: "YYYY-MM-DD" },
     done: { type: "boolean" },
-    assignee: { type: ["string", "null"], description: "A teammate's id" },
+    assignee: {
+      type: ["object", "null"],
+      description: "The teammate, or null for nobody",
+      properties: { id: { type: "string" }, name: { type: "string" } },
+    },
   },
 };
 
-// Only the fields a planner needs.
-function brief({ id, title, due, done, assignee }: Task) {
-  return { id, title, due, done, assignee };
+// The most tasks tasks.list returns.
+const MAX_TASKS = 50;
+
+// Only the fields a planner needs, with the assignee's name next to the id.
+function brief(
+  { id, title, due, done, assignee }: Task,
+  teammates: Teammate[],
+) {
+  const teammate = teammates.find((t) => t.id === assignee);
+  return {
+    id,
+    title,
+    due,
+    done,
+    assignee: teammate ? { id: teammate.id, name: teammate.name } : null,
+  };
 }
 
 // The task's title, for a confirmation the user can read.
@@ -63,22 +86,42 @@ const teamboard: CapabilityModule = {
     ...dictaCapabilities,
     "tasks.list": {
       level: "read",
-      desc: "Lists the tasks, all of them or those whose title contains the search text.",
+      desc: `Lists the tasks, all of them or those whose title contains the search text, at most ${MAX_TASKS}.`,
       args: {
         type: "object",
         properties: {
           q: { type: "string", description: "Text the title contains" },
+          limit: {
+            type: "number",
+            description: `The most tasks to return, at most ${MAX_TASKS}, which is the default`,
+          },
         },
       },
       output: { type: "array", items: taskOutput },
-      run: async ({ q }: { q?: string }) => (await listTasks(q)).map(brief),
+      run: async ({ q, limit }: { q?: string; limit?: number }) => {
+        const [tasks, teammates] = await Promise.all([
+          listTasks(q),
+          listTeammates(),
+        ]);
+        const most = Math.max(
+          1,
+          Math.min(Math.floor(limit ?? MAX_TASKS), MAX_TASKS),
+        );
+        return tasks.slice(0, most).map((task) => brief(task, teammates));
+      },
     },
     "tasks.get": {
       level: "read",
       desc: "Gets one task.",
       args: { type: "object", properties: { id }, required: ["id"] },
       output: taskOutput,
-      run: async ({ id }: Id) => brief(await getTask(id)),
+      run: async ({ id }: Id) => {
+        const [task, teammates] = await Promise.all([
+          getTask(id),
+          listTeammates(),
+        ]);
+        return brief(task, teammates);
+      },
     },
     "teammates.list": {
       level: "read",
