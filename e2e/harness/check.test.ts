@@ -31,7 +31,8 @@ before(() => {
   );
   dir = mkdtempSync(join(tmpdir(), "harness-check-"));
   symlinkSync(join(harness, "node_modules"), join(dir, "node_modules"));
-  symlinkSync(join(harness, "check"), join(dir, "check"));
+  mkdirSync(join(dir, "scripts"));
+  symlinkSync(join(harness, "scripts", "check"), join(dir, "scripts", "check"));
   copyFileSync(join(harness, "tsconfig.json"), join(dir, "tsconfig.json"));
   cpSync(join(import.meta.dirname, "sites"), join(dir, "sites"), {
     recursive: true,
@@ -67,7 +68,7 @@ after(() => {
 function check(name: string) {
   const result = spawnSync(
     join(dir, "node_modules", ".bin", "tsx"),
-    [join(dir, "check", "index.ts"), name],
+    [join(dir, "scripts", "check", "index.ts"), name],
     { cwd: dir, encoding: "utf8" },
   );
   return { status: result.status, output: result.stdout };
