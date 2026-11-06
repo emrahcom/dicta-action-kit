@@ -19,7 +19,8 @@ notes and module describe their sites. They clone the harness, keep it as the
 share it, each in its own folder, on one branch.
 
 Everything the harness makes for a site is in `sites/<name>/`. The harness's
-own `main` never has `sites/`, so its updates do not conflict. A site's folder
+own `main` has only `sites/README.md`, a short note on what goes into `sites/`,
+and never a site's folder, so its updates do not conflict. A site's folder
 holds only two things:
 
 - `sites/<name>/module/`: the module.
@@ -77,6 +78,7 @@ through the steps.
 
 - `README.md`: what the harness is, making the private copy, and where to start
   reading (`docs/`), in simple English.
+- `sites/README.md`: what goes into `sites/` (One folder per site).
 - `LICENSE`: Apache-2.0, as the other dicta repos.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
