@@ -23,7 +23,7 @@ own `main` has only `sites/README.md`, a short note on what goes into `sites/`,
 and never a site's folder, so its updates do not conflict. A site's folder
 holds only two things:
 
-- `sites/<name>/module/`: the module.
+- `sites/<name>/module/`: the module, with its `tsconfig.json` (The check).
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
   decided with the developer: where the site's code or test environment is and
   how to start it, the integration method, the capability list the developer
@@ -99,21 +99,48 @@ through the steps.
   developer through it, try it on the running site once the module is in it,
   and update the harness when asked. It points to the guide for each step
   instead of repeating it. `CLAUDE.md` includes it.
-- One check command, run on `sites/<name>/module/`:
-  - a type check against the types `dicta-action-js` exports;
-  - the site context built from the module with `dicta-action-js`'s own
-    `buildContext`, then checked with `dicta-action-server`'s own
-    `checkContext`;
-  - the module rules the types cannot express, such as `confirm` for the
-    `write`, `destructive` and `external` levels;
-  - a warning for a type list other than a type and `null` (What it teaches);
-  - a warning when `upstream/main` has a newer harness, skipped when offline.
-- `npm run server`: starts the pinned `dicta-action-server` from
-  `node_modules` for trying requests, with its settings from a `.env` file that
-  is never committed (`.env.example` shows them).
-- `dicta-action-js` is an npm dependency and `dicta-action-server` an npm git
-  dependency, both pinned, so the check runs the same code as the real client
-  and server. Both export what the check needs.
+- `package.json` with the dependencies and the commands of The check, and
+  `tsconfig.json`, the TypeScript settings the sites' modules extend.
+- `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
+
+## The check
+
+`npm run check -- <name>` checks the module of one site; `npm run check` checks
+every site. It needs only `npm install`: it runs in Node, with a TypeScript
+loader (`tsx`) and a DOM stand-in (`happy-dom`), never in a browser. For each
+site:
+
+- a type check of the module, against the types `dicta-action-js` exports and
+  the site's code;
+- the site context built from the module with `dicta-action-js`'s own
+  `buildContext`, then checked with `dicta-action-server`'s own `checkContext`;
+- the module rules the types cannot express: `confirm` on every `write`,
+  `destructive` and `external` capability, and `confirmOver`, when set, a whole
+  number from 0;
+- warnings: a type list other than a type and `null` (What it teaches), and a
+  newer harness on `upstream/main`, skipped when offline.
+
+An error fails the check; a warning does not. When the module cannot be loaded
+outside a browser, for example because the site's code needs more than the DOM
+stand-in has, the check says so and still runs the type check. Trying the
+module on the running site covers the rest.
+
+The module's imports of the site's code follow the integration method (The
+module, Integration). `sites/<name>/module/tsconfig.json` extends the harness's
+`tsconfig.json` with the module's settings, such as an import alias. A path that
+differs from machine to machine, such as where the site's code is, goes into
+`sites/<name>/module/tsconfig.local.json`, which extends it and is never
+committed. The agent writes it from the site's `notes.md` on a new machine.
+
+`dicta-action-js` is an npm dependency and `dicta-action-server` an npm git
+dependency, both pinned, so the check runs the same code as the real client and
+server. Each provides what the check needs: `buildContext` from the package
+entry of `dicta-action-js`, and `checkContext` from `src/context.ts` of
+`dicta-action-server` (`architecture.md` in each).
+
+`npm run server` starts the pinned `dicta-action-server` from `node_modules`,
+with `tsx`, for trying requests on the running site. Its settings come from a
+`.env` file that is never committed; `.env.example` shows them.
 
 ## What it teaches
 
