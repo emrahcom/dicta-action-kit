@@ -32,7 +32,8 @@ builds it in the browser.
     `buildContext`, then checked with `dicta-action-server`'s own
     `checkContext`;
   - the module rules the types cannot express, such as `confirm` for the
-    `write`, `destructive` and `external` levels.
+    `write`, `destructive` and `external` levels;
+  - a warning for a type list other than a type and `null` (What it teaches).
 - `dicta-action-js` and `dicta-action-server` are npm git dependencies, pinned
   by commit, so the check runs the same code as the real server and client.
   Both repos export what the check needs.
@@ -47,7 +48,13 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - `pageLoad` on every capability that may load a page, a sentence in its `desc`
   that says so, and the page load as the last action of `run`.
 - A small `state` and small outputs.
-- A schema field has one type, so a capability cannot clear a value today.
+- A value the user can clear, such as a due date, has the type list
+  `["<type>", "null"]`. In `run`, a field left out changes nothing, `null`
+  clears the value the way the site does, and any other value sets it. An
+  output field that can be empty has the same list. Type lists are used only
+  for a type or `null`.
+- Trying the module on the running site includes a request that clears each
+  value that can be cleared.
 
 ## Checking a harness run
 
