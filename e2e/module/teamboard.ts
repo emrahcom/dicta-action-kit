@@ -14,15 +14,24 @@ const teammate = {
   type: "string",
   description: "A teammate's id, from teammates.list",
 };
+// The same, in a change, where null clears the value.
+const newDue = {
+  type: ["string", "null"],
+  description: "Due date, YYYY-MM-DD, or null to remove it",
+};
+const newAssignee = {
+  type: ["string", "null"],
+  description: "A teammate's id, from teammates.list, or null for nobody",
+};
 
 const taskOutput = {
   type: "object",
   properties: {
     id: { type: "string" },
     title: { type: "string" },
-    due: { type: "string", description: "YYYY-MM-DD, or null" },
+    due: { type: ["string", "null"], description: "YYYY-MM-DD" },
     done: { type: "boolean" },
-    assignee: { type: "string", description: "A teammate's id, or null" },
+    assignee: { type: ["string", "null"], description: "A teammate's id" },
   },
 };
 
@@ -109,17 +118,26 @@ const teamboard: CapabilityModule = {
     },
     "tasks.update": {
       level: "write",
-      desc: "Changes a task's title, due date or assignee.",
+      desc: "Changes a task's title, due date or assignee, or removes its due date or assignee.",
       args: {
         type: "object",
-        properties: { id, title: { type: "string" }, due, assignee: teammate },
+        properties: {
+          id,
+          title: { type: "string" },
+          due: newDue,
+          assignee: newAssignee,
+        },
         required: ["id"],
       },
       confirm: async ({ id }: Id) => `Change the task "${await title(id)}"`,
       run: async ({
         id,
         ...changes
-      }: Id & { title?: string; due?: string; assignee?: string }) => {
+      }: Id & {
+        title?: string;
+        due?: string | null;
+        assignee?: string | null;
+      }) => {
         await actions.updateTask(id, changes);
       },
     },

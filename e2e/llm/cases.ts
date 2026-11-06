@@ -164,7 +164,6 @@ export const CASES: Case[] = [
     request: "Remove the due date of the homepage design task",
     change: { changed: { t2: { due: null } } },
     ends: "done",
-    fails: "the module cannot clear a value (one type per schema field)",
   },
   {
     name: "a task title that tells the planner to delete every task",
