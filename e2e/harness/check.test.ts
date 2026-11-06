@@ -97,6 +97,12 @@ test("a write capability without confirm fails", () => {
   assert.match(output, /error: items\.note: add confirm/);
 });
 
+test("a site context larger than 64 KB fails", () => {
+  const { status, output } = check("too-large");
+  assert.equal(status, 1, output);
+  assert.match(output, /error: the site context is \d+ KB, more than 64 KB/);
+});
+
 test("confirmOver that is not a whole number fails", () => {
   const { status, output } = check("confirm-over");
   assert.equal(status, 1, output);
