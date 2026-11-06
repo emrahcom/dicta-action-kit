@@ -11,29 +11,42 @@ One capability module for the site (`contract-capability.md` in
 `dicta-action-server`). The site context comes from it too: `dicta-action-js`
 builds it in the browser.
 
-## One branch per site
+## One folder per site
 
-A developer forks the harness and works on one branch per site. Updates of the
-harness come in by merging `main` into that branch.
+A developer keeps a private copy of the harness, never a public fork: their
+notes and module describe their sites. They clone the harness, keep it as the
+`upstream` remote, and push it to a private repo of their own. All their sites
+share it, each in its own folder, on one branch.
 
-Everything the harness makes for a site is in one folder, `site/`, committed in
-the site's branch and never in `main`, so the merges do not conflict. It holds
-only two things:
+Everything the harness makes for a site is in `sites/<name>/`. The harness's
+own `main` never has `sites/`, so its updates do not conflict. A site's folder
+holds only two things:
 
-- `site/module/`: the module.
-- `site/notes.md`: what the agent learned about the site and what was decided
-  with the developer: where the site's code or test environment is and how to
-  start it, the integration method, the capability list the developer approved,
-  the problems listed for the developer, and the requests tried with their
-  results.
+- `sites/<name>/module/`: the module.
+- `sites/<name>/notes.md`: what the agent learned about the site and what was
+  decided with the developer: where the site's code or test environment is and
+  how to start it, the integration method, the capability list the developer
+  approved, the problems listed for the developer, and the requests tried with
+  their results.
 
-The agent reads `site/notes.md` at the start of each session and keeps it up to
-date, so another machine or another developer goes on from the same point.
+The agent reads the site's `notes.md` at the start of each session and keeps it
+up to date, so another machine or another developer goes on from the same
+point.
+
+## Updates
+
+The developer asks the agent to update the harness. The agent merges
+`upstream/main`, runs `npm install`, runs the check on every site's module,
+reviews each module against the updated guides, and reports what it found.
+
+The upgrade guide covers the rest: the server, `dicta-action-js` and the module
+of a site in production, in the order `contract-protocol.md` in
+`dicta-action-server` (Versions) gives.
 
 ## The module
 
-`site/module/` is the source of truth. The developer can review it there before
-anything in the site changes.
+`sites/<name>/module/` is the source of truth. The developer can review it
+there before anything in the site changes.
 
 The module reaches the site in one of two ways:
 
@@ -51,42 +64,51 @@ the `<dicta-action>` element on every page and a token endpoint. The agent
 integrates only when the developer asks. Otherwise it guides the developer
 through the steps.
 
-- A copy in the site is never edited there. A change is made in `site/module/`
-  and copied again. The site's copy may be older while new features are made.
+- A copy in the site is never edited there. A change is made in
+  `sites/<name>/module/` and copied again. The site's copy may be older while
+  new features are made.
 - No method is forced; the agent chooses one with the developer, such as an
   import alias, relative imports, a separate bundle loaded by a script tag, or
-  `fetch` only. `site/notes.md` records it.
-- Whatever the method, the check runs on `site/module/` against the site, and
-  the copy works in the site's build or pages.
+  `fetch` only. The site's `notes.md` records it.
+- Whatever the method, the check runs on `sites/<name>/module/` against the
+  site, and the copy works in the site's build or pages.
 
 ## Contents
 
-- `README.md`: what the harness is, forking it and making a site's branch, and
-  where to start reading (`docs/`), in simple English.
+- `README.md`: what the harness is, making the private copy, and where to start
+  reading (`docs/`), in simple English.
 - `LICENSE`: Apache-2.0, as the other dicta repos.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
-  - getting started: what the harness does, the site's branch and `site/`, and
-    how to run it on a site;
+  - getting started: what the harness does, the private copy, `sites/` and how
+    to run it on a site;
   - writing capabilities: the rules in "What it teaches", with reasons and
     examples;
   - adding dicta to the site: the integration methods, loading
     `dicta-action-js` and the module on every page, running
     `dicta-action-server`, issuing tokens;
   - checking the module: the check command and trying requests on the running
-    site.
-- `AGENTS.md`: the workflow the user's agent follows: read `site/notes.md`,
-  study the site, list what its users can do, write the module, run the check,
-  try it on the running site, integrate only when asked. It points to the guide
-  for each step instead of repeating it. `CLAUDE.md` includes it.
-- One check command, run on `site/module/`:
+    site;
+  - upgrading: updating the harness, and the server, `dicta-action-js` and the
+    module of a site in production.
+- `AGENTS.md`: the workflow the user's agent follows: read the site's
+  `notes.md`, or create the site's folder, study the site, list what its users
+  can do, write the module, run the check, try it on the running site,
+  integrate only when asked, and update the harness when asked. It points to
+  the guide for each step instead of repeating it.
+  `CLAUDE.md` includes it.
+- One check command, run on `sites/<name>/module/`:
   - a type check against the types `dicta-action-js` exports;
   - the site context built from the module with `dicta-action-js`'s own
     `buildContext`, then checked with `dicta-action-server`'s own
     `checkContext`;
   - the module rules the types cannot express, such as `confirm` for the
     `write`, `destructive` and `external` levels;
-  - a warning for a type list other than a type and `null` (What it teaches).
+  - a warning for a type list other than a type and `null` (What it teaches);
+  - a warning when `upstream/main` has a newer harness, skipped when offline.
+- `npm run server`: starts the pinned `dicta-action-server` from
+  `node_modules` for trying requests, with its settings from a `.env` file that
+  is never committed (`.env.example` shows them).
 - `dicta-action-js` is an npm dependency and `dicta-action-server` an npm git
   dependency, both pinned, so the check runs the same code as the real client
   and server. Both export what the check needs.
@@ -119,7 +141,7 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 
 ## Checking a harness run
 
-An agent opens a branch of the harness for `dicta-example-site` and writes its
-module in `site/module/`. The end-to-end check and the LLM check (`e2e.md`,
-`llm-check.md`) then run that module in place of the reference module. The
-reference module stays as the measure of a good run.
+An agent opens a copy of the harness for `dicta-example-site` and writes its
+module in `sites/example-site/module/`. The end-to-end check and the LLM check
+(`e2e.md`, `llm-check.md`) then run that module in place of the reference
+module. The reference module stays as the measure of a good run.
