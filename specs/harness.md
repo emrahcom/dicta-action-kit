@@ -8,8 +8,8 @@ itself, not here.
 ## What the harness makes
 
 One capability module for the site (`contract-capability.md` in
-`dicta-action-server`). `dicta-action-js` builds the site context from it in
-the browser, so there is no other file to make.
+`dicta-action-server`). The site context comes from it too: `dicta-action-js`
+builds it in the browser.
 
 ## Contents
 
