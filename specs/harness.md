@@ -162,6 +162,12 @@ server. Each provides what the check needs: `buildContext` from the package
 entry of `dicta-action-js`, and `checkContext` from `src/context.ts` of
 `dicta-action-server` (`architecture.md` in each).
 
+A task that changes `dicta-action-server` or `dicta-example-site`, or releases
+`dicta-action-js`, moves the harness's pin to the new commit or version, unless
+it says why not. The kit's checks then run on the example site with the new
+pin. A developer's copy keeps its pins until the developer updates the harness
+(Updates).
+
 `npm run server` starts the pinned `dicta-action-server` from `node_modules`,
 with `tsx`, for trying requests on the running site. Its settings come from a
 `.env` file that is never committed; `.env.example` shows them.
