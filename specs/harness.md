@@ -18,10 +18,10 @@ notes and module describe their sites. They clone the harness, keep it as the
 `upstream` remote, and push it to a private repo of their own. All their sites
 share it, each in its own folder, on one branch.
 
-Everything the harness makes for a site is in `sites/<name>/`. The harness's
-own `main` has only `sites/README.md`, a short note on what goes into `sites/`,
-and `sites/example-site/` (The example site). It never has a developer's site
-folder, so its updates do not conflict. A site's folder holds only two things:
+Everything the harness makes for a site is in `sites/<name>/`. In the
+harness's own `main`, `sites/` has only `sites/example-site/` (The example
+site). It never has a developer's site folder, so its updates do not conflict.
+A site's folder holds only two things:
 
 - `sites/<name>/module/`: the module, with its `tsconfig.json` (The check).
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
@@ -100,7 +100,6 @@ through the steps.
 
 - `README.md`: what the harness is, making the private copy, and where to start
   reading (`docs/`), in simple English.
-- `sites/README.md`: what goes into `sites/` (One folder per site).
 - `sites/example-site/`: the example site (The example site).
 - `LICENSE`: Apache-2.0, as the other dicta repos.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
