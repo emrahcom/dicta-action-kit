@@ -121,7 +121,8 @@ asks, the same way as the rest of the integration.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
   - getting started: what the harness does, the private copy, `sites/` and how
-    to run it on a site, with a sample first prompt to the agent;
+    to run it on a site, with a sample first prompt to the agent and tips from
+    real sessions (Checking a harness run);
   - writing capabilities: the rules in "What it teaches", with reasons and
     examples;
   - adding dicta to the site: the integration methods, loading
@@ -234,3 +235,8 @@ judges by the effects on the site's data, so the module's own capability names
 do not matter. The end-to-end check stays on the reference module: its stub
 plans name the reference module's capabilities. The reference module stays as
 the measure of a good run: the same cases run on both.
+
+What a run teaches about working with the agent, such as what to tell it at the
+start or when to stop it, becomes a tip in the getting started guide. Only what
+a real session showed becomes a tip, in a sentence or two; a tip a later run
+proves wrong is removed.
