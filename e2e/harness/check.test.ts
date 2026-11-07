@@ -1,7 +1,8 @@
 // Runs the harness check (../dicta-action-harness/check/) on small modules, one
 // for each error and warning, on the reference module and on the harness's
-// example site (specs/harness.md, The check). It copies them into a folder laid out like the harness, so the
-// harness itself is not changed. Needs `npm install` in the harness.
+// example site (specs/harness.md, The check). It copies them into a folder
+// laid out like the harness, so the harness itself is not changed. Needs
+// `npm install` in the harness.
 
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
