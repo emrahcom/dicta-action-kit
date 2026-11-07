@@ -20,8 +20,8 @@ share it, each in its own folder, on one branch.
 
 Everything the harness makes for a site is in `sites/<name>/`. The harness's
 own `main` has only `sites/README.md`, a short note on what goes into `sites/`,
-and never a site's folder, so its updates do not conflict. A site's folder
-holds only two things:
+and `sites/example-site/` (The example site). It never has a developer's site
+folder, so its updates do not conflict. A site's folder holds only two things:
 
 - `sites/<name>/module/`: the module, with its `tsconfig.json` (The check).
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
@@ -33,6 +33,28 @@ holds only two things:
 The agent reads the site's `notes.md` at the start of each session and keeps it
 up to date, so another machine or another developer goes on from the same
 point.
+
+## The example site
+
+`sites/example-site/` is a finished site folder for `dicta-example-site`, so
+developers and their agents can see what a site's `notes.md` and module look
+like. It is the result of a real session in the harness: a developer asks the
+agent to add the site and works with it as any developer would. The result is
+committed as it is.
+
+- `dicta-example-site` is an npm git dependency of the harness, pinned like
+  `dicta-action-server`, so its code is in `node_modules/dicta-example-site/`
+  on every machine. npm installs only its files, without history or
+  devDependencies.
+- The site's code is given to the agent there. The module's `tsconfig.json`
+  points into `node_modules/`, the same path on every machine, and is
+  committed, so `npm run check` passes on every machine with no local file.
+- It also holds a `README.md`: it is an example, kept unchanged so that harness
+  updates apply cleanly.
+- The user's agent reads it as a model and never changes it. It skips it when
+  it reviews the sites' modules in an update.
+- The kit runs the harness check on it, so it keeps up with the harness, and
+  the LLM check on demand.
 
 ## Updates
 
@@ -79,6 +101,7 @@ through the steps.
 - `README.md`: what the harness is, making the private copy, and where to start
   reading (`docs/`), in simple English.
 - `sites/README.md`: what goes into `sites/` (One folder per site).
+- `sites/example-site/`: the example site (The example site).
 - `LICENSE`: Apache-2.0, as the other dicta repos.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
