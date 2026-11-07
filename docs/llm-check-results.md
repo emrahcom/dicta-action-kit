@@ -4,6 +4,21 @@ Runs of the LLM check worth keeping, newest first (`specs/llm-check.md`). One
 run is a picture, not a verdict: the same setting can pass a case in one run
 and fail it in the next.
 
+## 2026-11-07: external confirmation
+
+The harness example site again, after the guide rule "Say where the data goes"
+and the agent's fix of its `tasks.share` confirmation. The run used
+`dicta-action-server` bcaa416, this repo at b879ede and `dicta-action-harness`
+at 641a6a6.
+
+| Model    | Effort | Module       | Passed  | Per request | Cost  |
+| -------- | ------ | ------------ | ------- | ----------- | ----- |
+| Opus 5.5 | medium | example-site | 17 / 17 | 4.8 s       | $0.16 |
+
+The share confirmation now reads `Share "Review the design for the new
+homepage" with Chen Li (chen@example.com)`, and the case passes. The cost is
+worked out as in the run before.
+
 ## 2026-11-07: the harness example site
 
 The first run on a module an agent made: `sites/example-site/` in
