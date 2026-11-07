@@ -121,7 +121,7 @@ asks, the same way as the rest of the integration.
 - `docs/`: the guides, for the developer and for their agent alike, in simple
   English. One file per topic:
   - getting started: what the harness does, the private copy, `sites/` and how
-    to run it on a site;
+    to run it on a site, with a sample first prompt to the agent;
   - writing capabilities: the rules in "What it teaches", with reasons and
     examples;
   - adding dicta to the site: the integration methods, loading
