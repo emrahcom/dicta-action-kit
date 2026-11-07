@@ -1,9 +1,9 @@
 # Harness
 
 `dicta-action-harness` is the folder a developer opens their AI agent in to
-build the action layer of their site. This spec records how the harness is
-built and checked. What the user's agent reads is written once, in the harness
-itself, not here.
+build the action layer of their site. This spec records what the harness holds
+and how it is built and checked; the wording the user's agent reads is in the
+harness.
 
 ## What the harness makes
 
@@ -44,26 +44,25 @@ committed as it is.
 
 - `dicta-example-site` is an npm git dependency of the harness, pinned like
   `dicta-action-server`, so its code is in `node_modules/dicta-example-site/`
-  on every machine. npm installs only its files, without history or
-  devDependencies.
+  on every machine.
 - The site's code is given to the agent there. The module's `tsconfig.json`
   points into `node_modules/`, the same path on every machine, and is
   committed, so `npm run check` passes on every machine with no local file.
-- It also holds a `README.md`: it is an example, kept unchanged so that harness
-  updates apply cleanly.
-- The user's agent reads it as a model and never changes it. It skips it when
-  it reviews the sites' modules in an update.
-- The kit runs the harness check on it, so it keeps up with the harness, and
-  the LLM check on demand.
+- It holds a `README.md` that says it is an example and is kept unchanged, so
+  harness updates apply cleanly. The user's agent reads it as a model and never
+  changes it.
+- The kit runs the harness check on it, and on small modules for each error and
+  warning, with `npm run test:harness` (`e2e/harness/`), so it keeps up with
+  the harness; the LLM check runs on it on demand.
 
 ## Updates
 
 The developer asks the agent to update the harness. The agent merges
 `upstream/main`, runs `npm install`, runs the check on every site's module,
-reviews each module against the updated guides, and reports what it found.
+reviews each module, except the example site's, against the updated guides,
+and reports what it found.
 
-The upgrade guide covers the rest: the server, `dicta-action-js` and the module
-of a site in production, in the order `contract-protocol.md` in
+The upgrade guide covers the rest, in the order `contract-protocol.md` in
 `dicta-action-server` (Versions) gives.
 
 ## The module
@@ -153,8 +152,8 @@ site:
 - a type check of the module, against the types `dicta-action-js` exports and
   the site's code;
 - the site context built from the module with `dicta-action-js`'s own
-  `buildContext`, then checked with `dicta-action-server`'s own `checkContext`,
-  and its size: at most 64 KB, the UTF-8 bytes of its JSON
+  `buildContext`, then checked with `dicta-action-server`'s own `checkContext`
+  (`src/context.ts`), and its size: at most 64 KB, the UTF-8 bytes of its JSON
   (`contract-protocol.md` in `dicta-action-server`, Limits);
 - the module rules the types cannot express: `confirm` on every `write`,
   `destructive` and `external` capability, and `confirmOver`, when set, a whole
@@ -176,9 +175,7 @@ committed. The agent writes it from the site's `notes.md` on a new machine.
 
 `dicta-action-js` is an npm dependency and `dicta-action-server` an npm git
 dependency, both pinned, so the check runs the same code as the real client and
-server. Each provides what the check needs: `buildContext` from the package
-entry of `dicta-action-js`, and `checkContext` from `src/context.ts` of
-`dicta-action-server` (`architecture.md` in each).
+server.
 
 A task that changes `dicta-action-server` or `dicta-example-site`, or releases
 `dicta-action-js`, moves the harness's pin to the new commit or version, unless
@@ -207,14 +204,14 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - The `confirm` of an `external` capability names where the data goes, in a
   short form the user knows, such as an email address or a site's name. Never
   a long link, a token or other text the user cannot read.
-- `pageLoad` on every capability that may load a page, a sentence in its `desc`
-  that says so, and the page load as the last action of `run`.
+- `pageLoad` as the contract asks (`contract-capability.md` in
+  `dicta-action-server`, Page changes), with the page load as the last action of
+  `run`.
 - A small `state` and small outputs.
 - A list capability whose result can grow takes the filters the site's own list
   offers, such as a search text, a status or a date range, and a limit; its
-  `desc` says how many items it returns at most. Included outputs share 16 KB
-  per round and a `forEach` runs over at most 100 items (`contract-protocol.md`
-  in `dicta-action-server`, Limits).
+  `desc` says how many items it returns at most. Included outputs and `forEach`
+  items are limited (`contract-protocol.md` in `dicta-action-server`, Limits).
 - A bulk action, such as "select all, delete", is a capability only when the
   site has one. Otherwise a plan uses `forEach`, and no capability loops over a
   single action in its `run`.
@@ -228,13 +225,10 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 
 ## Checking a harness run
 
-An agent opens a copy of the harness for `dicta-example-site` and writes its
-module in `sites/example-site/module/`. The LLM check (`llm-check.md`) then
-runs that module in place of the reference module, by `HARNESS_SITE_DIR`; it
-judges by the effects on the site's data, so the module's own capability names
-do not matter. The end-to-end check stays on the reference module: its stub
-plans name the reference module's capabilities. The reference module stays as
-the measure of a good run: the same cases run on both.
+The LLM check runs a harness-made module, such as the example site's, by
+`HARNESS_SITE_DIR` (`llm-check.md`, Running), with the same cases as the
+reference module, the measure of a good run. The end-to-end check stays on the
+reference module, whose capability names its stub plans use.
 
 What a run teaches about working with the agent, such as what to tell it at the
 start or when to stop it, becomes a tip in the getting started guide. Only what

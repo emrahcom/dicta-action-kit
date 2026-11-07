@@ -44,5 +44,5 @@ What the user can do covers every capability level:
 - `POST /api/reset` restores the sample tasks, for tests.
 - The pages meet WCAG 2.2 level AA.
 
-The site does not use dicta. Its action layer is made later with the harness,
-like on any other site.
+The site does not use dicta. Its action layer is in the harness (`harness.md`,
+The example site).

@@ -3,12 +3,12 @@
 The LLM check runs requests in plain words through an LLM planner of
 `dicta-action-server` (`architecture-planner.md` there) on the example site. It
 shows how well the planner, its prompt and the module work for real requests,
-and how fast and costly they are. It is run again after every change to a
-prompt, the module or the site, and the same cases compare planners, models and
-settings.
+and how fast and costly they are. It is worth running on demand after a change
+to a prompt, the module or the site, and the same cases compare planners,
+models and settings.
 
-It lives in `e2e/llm/` and reuses the end-to-end setup and, unless
-`HARNESS_SITE_DIR` says otherwise (Running), the reference module (`e2e.md`).
+It lives in `e2e/llm/` and reuses the end-to-end setup and the reference
+module (`e2e.md`), or a harness-made module (Running).
 Only the planner differs: the server runs with an LLM planner instead of
 `stub`.
 

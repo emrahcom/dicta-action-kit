@@ -6,9 +6,8 @@ The workshop for two repos that have no specs or tasks of their own:
   build the action layer of their site. Its `AGENTS.md` and `CLAUDE.md` are
   product content, the instructions a user's agent follows; they are not
   instructions for working on the harness.
-- `dicta-example-site`: a small web app that stands in for a developer's site.
-  The harness is developed and checked on it, the action repos use it to run
-  plans end to end, and the harness's example site was made for it.
+- `dicta-example-site`: a small web app that stands in for a developer's site
+  (`specs/example-site.md`).
 
 It also holds the end-to-end check of the action repos, in `e2e/`
 (`specs/e2e.md`), and the check of the LLM planners with real requests, in
@@ -42,6 +41,8 @@ Run them after every change.
 - Format and type check: `npm run check`
 - Lint: `npm run lint`
 - End-to-end check: `npm run test:e2e` (Chromium, Firefox and WebKit)
+- Harness check tests: `npm run test:harness` (needs `npm install` in the
+  harness)
 
 Only on demand, since it calls an LLM provider and costs money: the LLM check,
 `npm run test:llm`, with the planner's key set, for example
