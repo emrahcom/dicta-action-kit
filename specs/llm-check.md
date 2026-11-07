@@ -38,7 +38,8 @@ Only the planner differs: the server runs with an LLM planner instead of
 Each case is a request as a user would write it. When the element asks for a
 confirmation, the test checks its text and presses Continue, or Cancel when the
 case says so. When the planner asks a question, the test gives the case's
-answer, if the case has one.
+answer; in a case without one, it cancels, and the case fails. The browser's
+date and time zone are fixed, so cases about dates have one right answer.
 
 A case passes by its effects, never by the plan's steps: many plans are correct
 for one request.
@@ -46,7 +47,8 @@ for one request.
 - The site's data: the test reads every task before and after the request, and
   the difference must be exactly what the case expects. Nothing else may
   change.
-- How the request ended: done, stop or info, from the element's history.
+- How the request ended: done, stop, info or cancelled, from the element's
+  history.
 - The confirmation text, where the case has one.
 - The page the browser ends on, where the case opens one.
 - Words the done text must contain, where the case asks for an answer.

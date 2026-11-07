@@ -32,7 +32,7 @@ What the user can do covers every capability level:
 ## Structure
 
 - Backend: Node.js 24 and TypeScript, run with type stripping, no framework. A
-  JSON API under `/api/`, an in-memory store with a few sample tasks, and the
+  JSON API under `/api/`, an in-memory store with the sample data, and the
   pages and frontend files. The API checks its input, as a real backend would.
 - Frontend: plain TypeScript compiled with `tsc`, no framework and no runtime
   dependencies. Three layers, as in many real sites:
@@ -41,7 +41,13 @@ What the user can do covers every capability level:
   - the page code: renders the page and wires the buttons to the actions.
 - `npm start` builds the frontend and serves everything on one port. This is the
   site's test environment.
-- `POST /api/reset` restores the sample tasks, for tests.
+- The API: `GET /api/tasks` (with `q` to search titles) and `POST /api/tasks`;
+  `GET`, `PATCH` and `DELETE /api/tasks/<id>`; `POST /api/tasks/<id>/share`;
+  `GET /api/teammates`; and `POST /api/reset`, which restores the sample data,
+  for tests.
+- The sample data is fixed, since the kit's tests depend on it: three tasks,
+  `t1` to `t3`, and three teammates, Anna Weber, Ben Okafor and Chen Li. New
+  tasks get the next id, from `t4`.
 - The pages meet WCAG 2.2 level AA.
 
 The site does not use dicta. Its action layer is in the harness (`harness.md`,
