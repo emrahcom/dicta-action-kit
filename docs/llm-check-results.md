@@ -4,6 +4,31 @@ Runs of the LLM check worth keeping, newest first (`specs/llm-check.md`). One
 run is a picture, not a verdict: the same setting can pass a case in one run
 and fail it in the next.
 
+## 2026-11-07: the harness example site
+
+The first run on a module an agent made: `sites/example-site/` in
+`dicta-action-harness`, from a real session in the harness, run by
+`HARNESS_SITE_DIR` (`specs/harness.md`, The example site). The run used
+`dicta-action-server` bcaa416, this repo at 83ce182 and `dicta-action-harness`
+at 9935e8f.
+
+| Model    | Effort | Module       | Passed  | Per request | Cost  |
+| -------- | ------ | ------------ | ------- | ----------- | ----- |
+| Opus 5.5 | medium | example-site | 16 / 17 | 4.3 s       | $0.15 |
+
+The cost uses $5 per million tokens for cache writes, 1.25 times the input
+price, so it is close, not exact.
+
+The one failure: "share a task with a teammate named by name". The task was
+shared with the right teammate, but the confirmation names the teammate, not
+the email the case expects. The guides do not ask for it today. Decided: the
+case stays, and a guide rule will say that an `external` confirmation names
+where the data goes, such as the email address.
+
+All other cases passed, also "remove a due date", which the reference module
+could not do at the 2026-11-05 run. The agent's module did as well as the
+reference module, at about the same time and cost.
+
 ## 2026-11-05: reply around text
 
 Sonnet 5.5 writes text around its JSON object (see 2026-11-03). Two fixes were
