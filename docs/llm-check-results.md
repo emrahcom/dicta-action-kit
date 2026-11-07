@@ -4,6 +4,33 @@ Runs of the LLM check worth keeping, newest first (`specs/llm-check.md`). One
 run is a picture, not a verdict: the same setting can pass a case in one run
 and fail it in the next.
 
+## 2026-11-07: Haiku with structured outputs
+
+The planner now forces its reply with structured outputs
+(`architecture-planner.md` in `dicta-action-server`, Reply format). Haiku 5.5
+at medium, five runs: three on the reference module, two on the harness example
+site. The runs used
+`dicta-action-server` 01daef6, this repo at 5dc129c and `dicta-action-harness`
+at deae8b6.
+
+| Model     | Effort | Module       | Passed  | Per request | Cost   |
+| --------- | ------ | ------------ | ------- | ----------- | ------ |
+| Haiku 5.5 | medium | reference    | 17 / 17 | 3.7 s       | $0.007 |
+| Haiku 5.5 | medium | reference    | 17 / 17 | 3.7 s       | $0.006 |
+| Haiku 5.5 | medium | reference    | 16 / 17 | 3.6 s       | $0.006 |
+| Haiku 5.5 | medium | example-site | 17 / 17 | 3.8 s       | $0.007 |
+| Haiku 5.5 | medium | example-site | 17 / 17 | 4.3 s       | $0.007 |
+| Opus 5.5  | medium | reference    | 17 / 17 | 5.0 s       | $0.183 |
+
+No format error and no planner failure in any run. The one failure: for "delete
+a task, with Continue", Haiku asked whether the task it found was the right one
+instead of sending the plan, although the prompt says not to ask for a
+confirmation.
+
+Kept: Opus 5.5 at medium, the default. Haiku is about 25 times cheaper and
+faster here, but this site is small; a larger real site, run with both, decides
+the default.
+
 ## 2026-11-07: external confirmation
 
 The harness example site again, after the guide rule "Say where the data goes"
