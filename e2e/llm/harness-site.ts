@@ -67,9 +67,19 @@ export function buildHarnessModule(siteDir: string) {
   );
 }
 
+// The example site's web/: the one next to the kit, or the copy the harness
+// installs in node_modules/ (harness.md, The example site). The page is served
+// from the one next to the kit.
+function isExampleWeb(dir: string) {
+  return (
+    dir === EXAMPLE_WEB ||
+    dir.endsWith(join(sep, "node_modules", "dicta-example-site", "web"))
+  );
+}
+
 // The example site's file in /dist/ for one of its source files in web/.
 function served(target: string, name: string) {
-  if (dirname(target) !== EXAMPLE_WEB || !target.endsWith(".ts")) {
+  if (!isExampleWeb(dirname(target)) || !target.endsWith(".ts")) {
     throw new Error(
       `HARNESS_SITE_DIR: the import ${name} points to ${target}, ` +
         "which is not a file in the example site's web/",
@@ -89,16 +99,24 @@ export function harnessImports(siteDir: string) {
       imports[name] = served(target, name);
       continue;
     }
-    if (target !== join(EXAMPLE_WEB, "*.ts")) {
+    // web/*.ts gives names without the extension; web/* gives names with it,
+    // and without it, as TypeScript resolves both.
+    const star = basename(target);
+    if (!isExampleWeb(dirname(target)) || (star !== "*.ts" && star !== "*")) {
       throw new Error(
         `HARNESS_SITE_DIR: the imports ${name} point to ${target}, ` +
           "not to the files in the example site's web/",
       );
     }
+    const prefix = name.slice(0, -1);
     for (const file of readdirSync(EXAMPLE_WEB)) {
       if (file.endsWith(".ts")) {
-        const entry = name.slice(0, -1) + basename(file, ".ts");
-        imports[entry] = served(EXAMPLE_WEB + sep + file, entry);
+        const path = EXAMPLE_WEB + sep + file;
+        const entry = prefix + basename(file, ".ts");
+        imports[entry] = served(path, entry);
+        if (star === "*") {
+          imports[prefix + file] = served(path, prefix + file);
+        }
       }
     }
   }

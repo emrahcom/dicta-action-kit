@@ -1,6 +1,6 @@
 // Runs the harness check (../dicta-action-harness/check/) on small modules, one
-// for each error and warning, and on the reference module (specs/harness.md,
-// The check). It copies them into a folder laid out like the harness, so the
+// for each error and warning, on the reference module and on the harness's
+// example site (specs/harness.md, The check). It copies them into a folder laid out like the harness, so the
 // harness itself is not changed. Needs `npm install` in the harness.
 
 import assert from "node:assert/strict";
@@ -37,6 +37,13 @@ before(() => {
   cpSync(join(import.meta.dirname, "sites"), join(dir, "sites"), {
     recursive: true,
   });
+  // The harness's own example site, with its code from the harness's
+  // node_modules, as on every machine (specs/harness.md, The example site).
+  cpSync(
+    join(harness, "sites", "example-site"),
+    join(dir, "sites", "example-site"),
+    { recursive: true },
+  );
 
   // The reference module, with the example site's code behind its alias in a
   // tsconfig.local.json, as on a developer's machine.
@@ -84,6 +91,12 @@ test("the reference module passes", () => {
   const { status, output } = check("teamboard");
   assert.equal(status, 0, output);
   assert.match(output, /teamboard\n {2}ok\n/);
+});
+
+test("the example site passes", () => {
+  const { status, output } = check("example-site");
+  assert.equal(status, 0, output);
+  assert.match(output, /example-site\n {2}ok\n/);
 });
 
 test("a type error in the module fails", () => {
