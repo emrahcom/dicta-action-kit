@@ -96,6 +96,22 @@ through the steps.
 - Whatever the method, the check runs on `sites/<name>/module/` against the
   site, and the copy works in the site's build or pages.
 
+### Voice input
+
+Voice input is optional. It adds `dicta-js` to the pages: its `<dicta-input>`
+element takes typed or spoken text, and its `dicta-text` event passes the text
+to `<dicta-action>` with `submit`. The agent adds it only when the developer
+asks, the same way as the rest of the integration.
+
+- The site loads `dicta-js` from its `dicta-server`, which serves the version
+  that fits it. The harness does not depend on `dicta-js` or `dicta-server`; the
+  guide links to their documents.
+- `dicta-server` needs a speech-to-text provider key and its own token. It may
+  share `JWT_SECRET` with `dicta-action-server`; a different `JWT_AUDIENCE` on
+  each keeps a token for one from working on the other.
+- For tests, `dicta-server` runs from its Docker image, on its default port
+  `8740`, next to `dicta-action-server` on `8741`.
+
 ## Contents
 
 - `README.md`: what the harness is, making the private copy, and where to start
@@ -111,6 +127,7 @@ through the steps.
   - adding dicta to the site: the integration methods, loading
     `dicta-action-js` and the module on every page, running
     `dicta-action-server`, issuing tokens;
+  - adding voice: `dicta-js` and `dicta-server` (Voice input);
   - checking the module: the check command and trying requests on the running
     site;
   - upgrading: updating the harness, and the server, `dicta-action-js` and the
