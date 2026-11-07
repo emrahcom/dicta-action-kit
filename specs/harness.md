@@ -144,6 +144,8 @@ asks, the same way as the rest of the integration.
   `tsconfig.json`, the TypeScript settings the sites' modules extend.
 - `.env.example`: the settings of `npm run server` (The check).
 - `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
+- `.npmrc`: `allow-git=root`, so `npm install` fetches the git dependencies of
+  `package.json` with every npm version; npm 12 fetches none by default.
 
 ## The check
 
