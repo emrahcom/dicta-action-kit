@@ -105,9 +105,10 @@ asks, the same way as the rest of the integration.
 - The site loads `dicta-js` from its `dicta-server`, which serves the version
   that fits it. The harness does not depend on `dicta-js` or `dicta-server`; the
   guide links to their documents.
-- `dicta-server` needs a speech-to-text provider key and its own token. It may
-  share `JWT_SECRET` with `dicta-action-server`; a different `JWT_AUDIENCE` on
-  each keeps a token for one from working on the other.
+- `dicta-server` needs a speech-to-text provider key and a token of the same
+  kind. With the same `JWT_SECRET` as `dicta-action-server`, one token works on
+  both; a different `JWT_AUDIENCE` on each keeps a token for one from working on
+  the other.
 - For tests, `dicta-server` runs from its Docker image, on its default port
   `8740`, next to `dicta-action-server` on `8741`.
 
@@ -138,8 +139,10 @@ asks, the same way as the rest of the integration.
   developer through it, try it on the running site once the module is in it,
   and update the harness when asked. It points to the guide for each step
   instead of repeating it. `CLAUDE.md` includes it.
+- `scripts/check/`: the check's code (The check).
 - `package.json` with the dependencies and the commands of The check, and
   `tsconfig.json`, the TypeScript settings the sites' modules extend.
+- `.env.example`: the settings of `npm run server` (The check).
 - `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
 
 ## The check
@@ -158,12 +161,13 @@ site:
 - the module rules the types cannot express: `confirm` on every `write`,
   `destructive` and `external` capability, and `confirmOver`, when set, a whole
   number from 0;
-- warnings: a type list other than a type and `null` (What it teaches), and a
-  newer harness on `upstream/main`, skipped when offline.
+- warnings: a type list other than a type and `null` (What it teaches), a
+  module that cannot be loaded outside a browser (below), and a newer harness on
+  `upstream/main`, skipped when offline.
 
 An error fails the check; a warning does not. When the module cannot be loaded
 outside a browser, for example because the site's code needs more than the DOM
-stand-in has, the check says so and still runs the type check. Trying the
+stand-in has, the check warns and still runs the type check. Trying the
 module on the running site covers the rest.
 
 The module's imports of the site's code follow the integration method (The
@@ -195,9 +199,10 @@ The harness teaches these, with the reasons and examples, in `docs/`:
   the server version the harness pins, in
   `node_modules/dicta-action-server/specs/` (`architecture.md` in
   `dicta-action-server`, Site context): `contract-capability.md`,
-  `contract-context.md` and, for confirmations and limits, `contract-plan.md`.
-  When a guide and a contract differ, the contract is right, and the agent
-  tells the developer.
+  `contract-context.md`, `contract-plan.md` for confirmations and the limits of
+  a plan, and `contract-protocol.md` (Limits) for the other limits. When a guide
+  and a contract differ, the contract is right, and the agent tells the
+  developer.
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
 - Outputs carry the names users know next to ids, such as an assignee's name.
@@ -210,8 +215,9 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - A small `state` and small outputs.
 - A list capability whose result can grow takes the filters the site's own list
   offers, such as a search text, a status or a date range, and a limit; its
-  `desc` says how many items it returns at most. Included outputs and `forEach`
-  items are limited (`contract-protocol.md` in `dicta-action-server`, Limits).
+  `desc` says how many items it returns at most. Included outputs are limited
+  (`contract-protocol.md` in `dicta-action-server`, Limits), and so are
+  `forEach` items (`contract-plan.md`, Limits).
 - A bulk action, such as "select all, delete", is a capability only when the
   site has one. Otherwise a plan uses `forEach`, and no capability loops over a
   single action in its `run`.
