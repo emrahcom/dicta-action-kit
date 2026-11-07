@@ -39,8 +39,6 @@ export type Case = {
   path?: string;
   // Words the final text must contain, in any case.
   says?: string[];
-  // Expected to fail today, for a known reason.
-  fails?: string;
 };
 
 const none: Change = {};

@@ -165,7 +165,6 @@ async function run(page: Page, c: Case): Promise<Result> {
     name: c.name,
     request: c.request,
     passed: problems.length === 0,
-    ...(c.fails ? { expectedToFail: c.fails } : {}),
     problems,
     rounds,
     ms,
@@ -182,7 +181,6 @@ async function run(page: Page, c: Case): Promise<Result> {
 
 for (const c of CASES) {
   test(c.name, async ({ page }) => {
-    test.fail(c.fails !== undefined, c.fails);
     const result = await run(page, c);
     save(result);
     expect(result.problems).toEqual([]);

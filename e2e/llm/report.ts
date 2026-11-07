@@ -12,7 +12,6 @@ export type Result = {
   name: string;
   request: string;
   passed: boolean;
-  expectedToFail?: string;
   problems: string[];
   rounds: number;
   ms: number;
@@ -41,7 +40,7 @@ export default function report() {
   const results: Result[] = JSON.parse(readFileSync(RESULTS, "utf8"));
   const rows = results.map((r) =>
     [
-      r.passed ? "pass" : r.expectedToFail ? "fail (expected)" : "FAIL",
+      r.passed ? "pass" : "FAIL",
       String(r.rounds),
       `${(r.ms / 1000).toFixed(1)} s`,
       String(r.usage.input + r.usage.cacheRead + r.usage.cacheWrite),
