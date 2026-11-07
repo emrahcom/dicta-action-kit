@@ -186,6 +186,8 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
 - Outputs carry the names users know next to ids, such as an assignee's name.
+- The `confirm` of an `external` capability names where the data goes, such as
+  the email address it is sent to, next to the name the user knows.
 - `pageLoad` on every capability that may load a page, a sentence in its `desc`
   that says so, and the page load as the last action of `run`.
 - A small `state` and small outputs.
