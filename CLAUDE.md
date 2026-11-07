@@ -8,7 +8,7 @@ The workshop for two repos that have no specs or tasks of their own:
   instructions for working on the harness.
 - `dicta-example-site`: a small web app that stands in for a developer's site.
   The harness is developed and checked on it, the action repos use it to run
-  plans end to end, and users can try the harness on it.
+  plans end to end, and the harness's example site was made for it.
 
 It also holds the end-to-end check of the action repos, in `e2e/`
 (`specs/e2e.md`), and the check of the LLM planners with real requests, in

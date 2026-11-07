@@ -2,9 +2,10 @@
 
 `dicta-example-site` is a small web app that stands in for a developer's site.
 The harness is developed and checked on it, the action repos run plans on it end
-to end, and users can try the harness on it. It must look like a real site to
-the harness: a backend with an API, and a frontend whose buttons call the site's
-own functions.
+to end, and the harness's example site shows users what the harness makes for
+it (`harness.md`, The example site). It must look like a real site to the
+harness: a backend with an API, and a frontend whose buttons call the site's own
+functions.
 
 ## App
 
