@@ -1,17 +1,19 @@
 # LLM check results
 
-Runs of the LLM check worth keeping, newest first (`specs/llm-check.md`). One
-run is a picture, not a verdict: the same setting can pass a case in one run
-and fail it in the next.
+Runs of the LLM check worth keeping, newest first
+([`specs/llm-check.md`](../specs/llm-check.md)). One run is a picture, not a
+verdict: the same setting can pass a case in one run and fail it in the next.
 
 ## 2026-11-07: Haiku with structured outputs
 
 The planner now forces its reply with structured outputs
-(`architecture-planner.md` in `dicta-action-server`, Reply format). Haiku 5.5
-at medium, five runs: three on the reference module, two on the harness example
-site. The runs used
-`dicta-action-server` 01daef6, this repo at 5dc129c and `dicta-action-harness`
-at deae8b6.
+([`architecture-planner.md`](https://github.com/emrahcom/dicta-action-server/blob/main/specs/architecture-planner.md#reply-format)
+in [`dicta-action-server`](https://github.com/emrahcom/dicta-action-server),
+Reply format). Haiku 5.5 at medium, five runs: three on the reference module,
+two on the harness example site. The runs used `dicta-action-server` 01daef6,
+this repo at 5dc129c and
+[`dicta-action-harness`](https://github.com/emrahcom/dicta-action-harness) at
+deae8b6.
 
 | Model     | Effort | Module       | Passed  | Per request | Cost   |
 | --------- | ------ | ------------ | ------- | ----------- | ------ |
@@ -50,9 +52,9 @@ worked out as in the run before.
 
 The first run on a module an agent made: `sites/example-site/` in
 `dicta-action-harness`, from a real session in the harness, run by
-`HARNESS_SITE_DIR` (`specs/harness.md`, The example site). The run used
-`dicta-action-server` bcaa416, this repo at 83ce182 and `dicta-action-harness`
-at 9935e8f.
+`HARNESS_SITE_DIR` ([`specs/harness.md`](../specs/harness.md#the-example-site),
+The example site). The run used `dicta-action-server` bcaa416, this repo at
+83ce182 and `dicta-action-harness` at 9935e8f.
 
 | Model    | Effort | Module       | Passed  | Per request | Cost  |
 | -------- | ------ | ------------ | ------- | ----------- | ----- |
@@ -84,8 +86,9 @@ passed 13 of 16 at low and 10 of 16 at medium, with 4 and 7 answers rejected:
 no better than before. Not adopted.
 
 Reading the last well-formed JSON object when the answer is not one object
-(`architecture-planner.md` in `dicta-action-server`, Reply format). The runs
-used `dicta-action-server` f9569be and this repo at d8736c5.
+([`architecture-planner.md`](https://github.com/emrahcom/dicta-action-server/blob/main/specs/architecture-planner.md#reply-format)
+in `dicta-action-server`, Reply format). The runs used `dicta-action-server`
+f9569be and this repo at d8736c5.
 
 | Model      | Effort | Passed  | From text | Per request | Cost  |
 | ---------- | ------ | ------- | --------- | ----------- | ----- |
