@@ -129,8 +129,12 @@ asks, the same way as the rest of the integration.
     `dicta-action-js` and the module on every page, running
     `dicta-action-server`, issuing tokens;
   - adding voice: `dicta-js` and `dicta-server` (Voice input);
-  - checking the module: the check command and trying requests on the running
-    site;
+  - checking the module: the check command, looking at the running site and
+    trying requests on it. The agent uses the browser tool it has, such as a
+    browser extension or Playwright, and none is installed by the harness. It
+    signs in through the site's own login form, and it records the requests
+    the page sends for each action, so it sees the site's own requests. A
+    script it writes for this stays outside the harness;
   - upgrading: updating the harness, and the server, `dicta-action-js` and the
     module of a site in production.
 - `AGENTS.md`: the workflow the user's agent follows: read the site's
@@ -138,11 +142,14 @@ asks, the same way as the rest of the integration.
   can do, write the module, run the check, integrate it when asked or guide the
   developer through it, try it on the running site once the module is in it,
   and update the harness when asked. It points to the guide for each step
-  instead of repeating it. `CLAUDE.md` includes it.
+  instead of repeating it. The credentials of the site's test account go only
+  into `.env`; the site's `notes.md` names the account, never its password.
+  `CLAUDE.md` includes it.
 - `scripts/check/`: the check's code (The check).
 - `package.json` with the dependencies and the commands of The check, and
   `tsconfig.json`, the TypeScript settings the sites' modules extend.
-- `.env.example`: the settings of `npm run server` (The check).
+- `.env.example`: the settings of `npm run server` (The check), and the site's
+  test account, commented out.
 - `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
 - `.npmrc`: `allow-git=root`, so `npm install` fetches the git dependencies of
   `package.json` with every npm version; npm 12 fetches none by default.
