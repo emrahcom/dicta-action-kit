@@ -189,6 +189,11 @@ it says why not. The kit's checks then run on the example site with the new
 pin. A developer's copy keeps its pins until the developer updates the harness
 (Updates).
 
+A git pin is moved in `package.json` and in `package-lock.json` (its `version`
+and `resolved` lines) together, then installed with `npm ci`. `npm install`
+refuses the git dependency while the two disagree, and a new lock file also
+moves other packages.
+
 `npm run server` starts the pinned `dicta-action-server` from `node_modules`,
 with `tsx`, for trying requests on the running site. Its settings come from a
 `.env` file that is never committed; `.env.example` shows them.
