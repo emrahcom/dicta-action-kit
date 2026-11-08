@@ -57,10 +57,13 @@ committed as it is.
 
 ## Updates
 
-The developer asks the agent to update the harness. The agent merges
-`upstream/main`, runs `npm install`, runs the check on every site's module,
-reviews each module, except the example site's, against the updated guides,
-and reports what it found.
+The developer updates the harness, or asks the agent to. The upgrade guide gives
+the commands, matching the README's copy steps: with the work committed,
+`git fetch upstream`, `git merge upstream/main`, `npm install`, `npm run check`,
+and `git push` for a copy with its own remote. The merge changes only the
+harness's own files, never a site's folder. Then the agent reviews each module,
+except the example site's, against the updated guides, and reports what it
+found.
 
 The upgrade guide covers the rest, in the order `contract-protocol.md` in
 `dicta-action-server` (Versions) gives.
