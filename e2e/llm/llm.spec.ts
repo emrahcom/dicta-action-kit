@@ -36,6 +36,15 @@ async function view(page: Page) {
   }
 }
 
+// How many requests the history holds, or undefined while a page loads.
+async function kept(page: Page) {
+  try {
+    return (await history(page)).length;
+  } catch {
+    return undefined;
+  }
+}
+
 // The newest history entry, the last one, or none yet.
 async function ended(page: Page) {
   try {
@@ -95,7 +104,14 @@ function sameChange(actual: Change, expected: Change) {
 
 async function run(page: Page, c: Case): Promise<Result> {
   for (const task of c.setup ?? []) {
-    await page.request.post(`${SITE}/api/tasks`, { data: task });
+    const response = await page.request.post(`${SITE}/api/tasks`, {
+      data: task,
+    });
+    if (!response.ok()) {
+      throw new Error(
+        `setup failed: ${response.status()} ${await response.text()}`,
+      );
+    }
   }
   await page.clock.install({ time: NOW });
   await open(page);
@@ -115,11 +131,11 @@ async function run(page: Page, c: Case): Promise<Result> {
   let entry: Record<string, unknown> | undefined;
   for (const [i, request] of requests.entries()) {
     // A request has ended when the history has one more entry.
-    const kept = (await history(page)).length;
+    const count = (await kept(page)) ?? 0;
     await say(page, request);
     entry = undefined;
     while (Date.now() - started < WAIT_MS) {
-      if ((await history(page)).length > kept) {
+      if (((await kept(page)) ?? count) > count) {
         entry = await ended(page);
         break;
       }
