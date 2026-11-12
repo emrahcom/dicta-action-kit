@@ -226,7 +226,8 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - A capability that changes data ends as the site's own action ends: it returns
   only once the site has saved the change, and leaves the page as that action
   itself leaves it, but does not copy its page load or change of view. When the
-  site gives no way to know that it saved, the agent tells the developer.
+  site gives no way to know that it saved, or saves only after a long delay, the
+  agent tells the developer.
 - The `confirm` of an `external` capability names where the data goes, in a
   short form the user knows, such as an email address or a site's name. Never
   a long link, a token or other text the user cannot read.
