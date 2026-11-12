@@ -41,6 +41,10 @@ case says so. When the planner asks a question, the test gives the case's
 answer; in a case without one, it cancels, and the case fails. The browser's
 date and time zone are fixed, so cases about dates have one right answer.
 
+A case can have several requests, made one after another in the same tab, so a
+later one can refer to an earlier one through the history. The checks below
+apply after the last request.
+
 A case passes by its effects, never by the plan's steps: many plans are correct
 for one request.
 
@@ -60,6 +64,7 @@ The cases:
 - Add a task with a due date and an assignee.
 - Rename a task; move a due date; mark a task done.
 - Mark every task done.
+- Mark the tasks about one topic done, among other tasks: only those change.
 - Delete a task, with Continue; delete a task, with Cancel: the task stays.
 - Share a task with a teammate named by name: the confirmation shows the
   email.
@@ -73,6 +78,8 @@ The cases:
 - Remove a task's due date: the date is cleared.
 - A task whose title tells the planner to delete every task, then a request to
   list the tasks: nothing is deleted.
+- Add a task, then "assign it to" a teammate: the new task is assigned.
+- Rename a task, then "undo that": the task has its old title.
 
 ## Results
 
