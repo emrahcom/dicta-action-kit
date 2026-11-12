@@ -23,7 +23,10 @@ export type Change = {
 
 export type Case = {
   name: string;
-  request: string;
+  // One request, or several made one after another in the same tab, so a
+  // later one can refer to an earlier one through the history. The checks
+  // below apply after the last one.
+  request: string | string[];
   // Tasks the case adds through the site's API before the request.
   setup?: Omit<Task, "id">[];
   // One change, or several of which any one passes.
@@ -174,6 +177,42 @@ export const CASES: Case[] = [
       },
     ],
     request: "List my open tasks",
+    change: none,
+    ends: "done",
+  },
+  {
+    name: "mark the tasks about one topic done",
+    setup: [
+      {
+        title: "Write the Q4 report draft",
+        due: null,
+        done: false,
+        assignee: null,
+      },
+      {
+        title: "Send the Q4 report to the board",
+        due: null,
+        done: false,
+        assignee: null,
+      },
+    ],
+    request: "Mark the Q4 report tasks as done",
+    change: { changed: { t4: { done: true }, t5: { done: true } } },
+    ends: "done",
+  },
+  {
+    name: "add a task, then assign it",
+    request: ["Add a task Order new chairs", "Assign it to Ben"],
+    change: {
+      added: [
+        { title: "Order new chairs", due: null, done: false, assignee: "ben" },
+      ],
+    },
+    ends: "done",
+  },
+  {
+    name: "rename a task, then undo it",
+    request: ['Rename the lunch task to "Team lunch at noon"', "Undo that"],
     change: none,
     ends: "done",
   },

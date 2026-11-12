@@ -110,34 +110,51 @@ async function run(page: Page, c: Case): Promise<Result> {
   const started = Date.now();
   let confirm: string | undefined;
   let question: string | undefined;
-  await say(page, c.request);
+  const requests = Array.isArray(c.request) ? c.request : [c.request];
+  const problems: string[] = [];
   let entry: Record<string, unknown> | undefined;
-  while (Date.now() - started < WAIT_MS) {
-    entry = await ended(page);
-    if (entry) {
+  for (const [i, request] of requests.entries()) {
+    // A request has ended when the history has one more entry.
+    const kept = (await history(page)).length;
+    await say(page, request);
+    entry = undefined;
+    while (Date.now() - started < WAIT_MS) {
+      if ((await history(page)).length > kept) {
+        entry = await ended(page);
+        break;
+      }
+      const state = await view(page);
+      const text = page.locator('[part~="text"]');
+      if (state === "confirmation") {
+        confirm = (await text.textContent()) ?? "";
+        const button = c.cancel ? "Cancel" : "Continue";
+        await page.getByRole("button", { name: button, exact: true }).click();
+      } else if (state === "question") {
+        question = (await text.textContent()) ?? "";
+        if (c.answer === undefined) {
+          await page
+            .getByRole("button", { name: "Cancel", exact: true })
+            .click();
+        } else {
+          await say(page, c.answer);
+        }
+      }
+      await page.waitForTimeout(250);
+    }
+    // An earlier request must be done, or a later one has nothing to refer
+    // to, and an undo would pass without anything to undo.
+    const type = (entry?.outcome as { type?: string } | undefined)?.type;
+    if (entry && i < requests.length - 1 && type !== "done") {
+      problems.push(`request ${i + 1} ended with ${type}, expected done`);
+    }
+    if (!entry) {
       break;
     }
-    const state = await view(page);
-    const text = page.locator('[part~="text"]');
-    if (state === "confirmation") {
-      confirm = (await text.textContent()) ?? "";
-      const button = c.cancel ? "Cancel" : "Continue";
-      await page.getByRole("button", { name: button, exact: true }).click();
-    } else if (state === "question") {
-      question = (await text.textContent()) ?? "";
-      if (c.answer === undefined) {
-        await page.getByRole("button", { name: "Cancel", exact: true }).click();
-      } else {
-        await say(page, c.answer);
-      }
-    }
-    await page.waitForTimeout(250);
   }
   const ms = Date.now() - started;
   const outcome = entry?.outcome as { type: string; text?: string } | undefined;
   const change = changeOf(before, (await tasks(page)) as Task[]);
   const path = new URL(page.url()).pathname;
-  const problems: string[] = [];
   if (!entry) {
     problems.push(`the request did not end within ${WAIT_MS / 1000} s`);
   } else if (outcome?.type !== c.ends) {
@@ -163,7 +180,7 @@ async function run(page: Page, c: Case): Promise<Result> {
   }
   return {
     name: c.name,
-    request: c.request,
+    request: requests.join(" -> "),
     passed: problems.length === 0,
     problems,
     rounds,
