@@ -223,6 +223,12 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
 - Outputs carry the names users know next to ids, such as an assignee's name.
+- A capability that changes stored data returns only when the site has saved
+  the change: many sites change the page at once and save in the background,
+  and a plan's next step comes within milliseconds. The capability awaits what
+  the site offers, such as the save request or the server's copy of a new item;
+  when the site offers nothing, the agent tells the developer. Studying the site
+  includes finding how it saves.
 - The `confirm` of an `external` capability names where the data goes, in a
   short form the user knows, such as an email address or a site's name. Never
   a long link, a token or other text the user cannot read.
