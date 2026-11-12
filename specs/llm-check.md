@@ -42,8 +42,8 @@ answer; in a case without one, it cancels, and the case fails. The browser's
 date and time zone are fixed, so cases about dates have one right answer.
 
 A case can have several requests, made one after another in the same tab, so a
-later one can refer to an earlier one through the history. The checks below
-apply after the last request.
+later one can refer to an earlier one through the history. Each earlier request
+must end with done; the checks below apply after the last one.
 
 A case passes by its effects, never by the plan's steps: many plans are correct
 for one request.
