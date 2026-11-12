@@ -134,7 +134,7 @@ export function submit(page: Page, replies: unknown[]) {
   );
 }
 
-// The element's history, newest first.
+// The element's history, oldest first.
 export function history(page: Page) {
   return page.evaluate(
     () =>

@@ -41,6 +41,7 @@ async function round(port: number) {
           state: { desc: "Nothing." },
           capabilities: [],
         },
+        history: [],
         exchange: [],
       }),
     },

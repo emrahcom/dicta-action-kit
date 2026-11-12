@@ -36,10 +36,10 @@ async function view(page: Page) {
   }
 }
 
-// The newest history entry, or none yet.
+// The newest history entry, the last one, or none yet.
 async function ended(page: Page) {
   try {
-    return (await history(page))[0];
+    return (await history(page)).at(-1);
   } catch {
     return undefined;
   }
