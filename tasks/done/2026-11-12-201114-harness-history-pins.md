@@ -1,8 +1,8 @@
 # Harness pins for the history
 
 `dicta-action-server` 0.2.0 and `dicta-action-js` 0.2.0 are released: every
-round carries the history, which the server requires, and `dicta.listHistory`
-is removed. Move the harness's pins together (`harness.md`, The check):
+round carries the history, which the server requires, and `dicta.listHistory` is
+removed. Move the harness's pins together (`harness.md`, The check):
 `dicta-action-server` from `v0.1.1` to `v0.2.0`, with its `package-lock.json`
 lines, and `dicta-action-js` from 0.1.3 to 0.2.0.
 

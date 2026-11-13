@@ -6,8 +6,8 @@ harness run) describes. Short and easy to read: the prompt in step 2 of Steps,
 the tips as a short list in a section of their own, one or two sentences each.
 
 The prompt uses the guides' own example site, `recipe-box`: its short name,
-where its code is, the running site, and a request to study the site and
-propose the capabilities.
+where its code is, the running site, and a request to study the site and propose
+the capabilities.
 
 The tips, from the example site's sessions:
 

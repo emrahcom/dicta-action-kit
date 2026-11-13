@@ -3,9 +3,8 @@
 The end-to-end check runs requests through all the action parts together: the
 example site in a browser, `dicta-action-js` and `dicta-action-server`. Each
 repo tests its own side alone; this check shows that they work together on a
-real site. It uses the server's `stub` planner, so a failure is a real
-mismatch, not an LLM answer (`architecture.md` in `dicta-action-server`,
-Planner).
+real site. It uses the server's `stub` planner, so a failure is a real mismatch,
+not an LLM answer (`architecture.md` in `dicta-action-server`, Planner).
 
 It lives in `e2e/` here and changes no other repo. A bug it finds is fixed in
 its own repo, with a task there.
@@ -20,8 +19,8 @@ contracts. It is what a good harness run should make for the example site
 - It covers what the user can do on Teamboard, through the site's own code: the
   actions in `web/actions.ts`, and `web/api.ts` for reading.
   - read: list or search tasks, get a task, list teammates;
-  - write: add a task, change it or clear its due date or assignee, mark it
-    done or not done;
+  - write: add a task, change it or clear its due date or assignee, mark it done
+    or not done;
   - destructive: delete a task;
   - external: share a task with a teammate;
   - with `pageLoad`: open a task's page, open the task list.
@@ -31,13 +30,13 @@ contracts. It is what a good harness run should make for the example site
 ## Setup
 
 - The tests start the example site and `dicta-action-server`, each on its own
-  port, from the sibling folders. The server runs with `PLANNER=stub` and a
-  test `JWT_SECRET`. The sibling repos are used as they are: their packages
-  installed and `dicta-action-js` built.
+  port, from the sibling folders. The server runs with `PLANNER=stub` and a test
+  `JWT_SECRET`. The sibling repos are used as they are: their packages installed
+  and `dicta-action-js` built.
 - The site's pages get `dicta-action-js`, the module and a `<dicta-action>`
   element on their way to the browser: the test adds them to each page's HTML
-  and serves their files from the site's origin. This is repeated on every
-  page load.
+  and serves their files from the site's origin. This is repeated on every page
+  load.
 - `getToken` returns a token the test signs with the test secret. The first one
   it returns has expired, so the first round gets a `401` and the element tries
   again with a new token (`contract-protocol.md` in `dicta-action-server`,

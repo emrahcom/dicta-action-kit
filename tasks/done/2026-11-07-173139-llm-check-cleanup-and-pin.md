@@ -7,5 +7,5 @@
   included outputs one by one (`contract-protocol.md` in `dicta-action-server`,
   Report; `harness.md`, The check).
 
-Check: `npm run check`, `npm run lint` and `npm run test:harness` in the kit
-and `npm run check` in the harness pass.
+Check: `npm run check`, `npm run lint` and `npm run test:harness` in the kit and
+`npm run check` in the harness pass.

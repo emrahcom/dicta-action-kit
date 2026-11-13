@@ -45,8 +45,8 @@ Run them after every change.
   harness)
 
 Only on demand, since it calls an LLM provider and costs money: the LLM check,
-`npm run test:llm`, with the planner's key set, for example
-`ANTHROPIC_API_KEY`. Report its table and cost.
+`npm run test:llm`, with the planner's key set, for example `ANTHROPIC_API_KEY`.
+Report its table and cost.
 
 `npm run format` fixes formatting.
 

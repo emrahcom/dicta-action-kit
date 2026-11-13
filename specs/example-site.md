@@ -2,9 +2,9 @@
 
 `dicta-example-site` is a small web app that stands in for a developer's site.
 The harness is developed and checked on it, the action repos run plans on it end
-to end, and the harness's example site shows users what the harness makes for
-it (`harness.md`, The example site). It must look like a real site to the
-harness: a backend with an API, and a frontend whose buttons call the site's own
+to end, and the harness's example site shows users what the harness makes for it
+(`harness.md`, The example site). It must look like a real site to the harness:
+a backend with an API, and a frontend whose buttons call the site's own
 functions.
 
 ## App
@@ -32,8 +32,8 @@ What the user can do covers every capability level:
 ## Structure
 
 - Backend: Node.js 24 and TypeScript, run with type stripping, no framework. A
-  JSON API under `/api/`, an in-memory store with the sample data, and the
-  pages and frontend files. The API checks its input, as a real backend would.
+  JSON API under `/api/`, an in-memory store with the sample data, and the pages
+  and frontend files. The API checks its input, as a real backend would.
 - Frontend: plain TypeScript compiled with `tsc`, no framework and no runtime
   dependencies. Three layers, as in many real sites:
   - an API client: one function for each API call;

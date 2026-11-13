@@ -44,9 +44,9 @@ at 641a6a6.
 | -------- | ------ | ------------ | ------- | ----------- | ----- |
 | Opus 5.5 | medium | example-site | 17 / 17 | 4.8 s       | $0.16 |
 
-The share confirmation now reads `Share "Review the design for the new
-homepage" with Chen Li (chen@example.com)`, and the case passes. The cost is
-worked out as in the run before.
+The share confirmation now reads
+`Share "Review the design for the new homepage" with Chen Li (chen@example.com)`,
+and the case passes. The cost is worked out as in the run before.
 
 ## 2026-11-07: the harness example site
 
@@ -64,10 +64,10 @@ The cost uses $5 per million tokens for cache writes, 1.25 times the input
 price, so it is close, not exact.
 
 The one failure: "share a task with a teammate named by name". The task was
-shared with the right teammate, but the confirmation names the teammate, not
-the email the case expects. The guides do not ask for it today. Decided: the
-case stays, and a guide rule will say that an `external` confirmation names
-where the data goes, such as the email address.
+shared with the right teammate, but the confirmation names the teammate, not the
+email the case expects. The guides do not ask for it today. Decided: the case
+stays, and a guide rule will say that an `external` confirmation names where the
+data goes, such as the email address.
 
 All other cases passed, also "remove a due date", which the reference module
 could not do at the 2026-11-05 run. The agent's module did as well as the
@@ -79,11 +79,11 @@ Sonnet 5.5 writes text around its JSON object (see 2026-11-03). Two fixes were
 tried. "Remove a due date" fails on purpose, as before, so 16 cases can pass.
 
 A stricter reply rule in the prompt, tried with a scratch change of each API
-request, not in a repo: "Think before you reply, never in the reply. If you
-find a mistake, fix it before you reply; never send a second object or a
-correction." and a closing line "Reply with one JSON object only." Sonnet 5.5
-passed 13 of 16 at low and 10 of 16 at medium, with 4 and 7 answers rejected:
-no better than before. Not adopted.
+request, not in a repo: "Think before you reply, never in the reply. If you find
+a mistake, fix it before you reply; never send a second object or a correction."
+and a closing line "Reply with one JSON object only." Sonnet 5.5 passed 13 of 16
+at low and 10 of 16 at medium, with 4 and 7 answers rejected: no better than
+before. Not adopted.
 
 Reading the last well-formed JSON object when the answer is not one object
 ([`architecture-planner.md`](https://github.com/emrahcom/dicta-action-server/blob/main/specs/architecture-planner.md#reply-format)
@@ -99,8 +99,8 @@ f9569be and this repo at d8736c5.
 average time per request and "Cost" the cost of the run.
 
 The text around the object was reasoning ("I need Anna's id first."),
-corrections (a plan text in German for an English request, then "Wait, the
-reply must be in the user's language", then a second object) and tags such as
+corrections (a plan text in German for an English request, then "Wait, the reply
+must be in the user's language", then a second object) and tags such as
 `<invoke name="x"></invoke>`. In a scratch run before the change, the last
 object was the right one in all 15 such answers. The one answer it could not
 read was a good answer as plain text, with no JSON at all.
@@ -114,8 +114,8 @@ The `claude` planner with six settings, one run each. The runs used
 `dicta-action-server` 95837ad and this repo at a74a403.
 
 "Remove a due date" fails on purpose (the module cannot clear a value), so 16
-cases can pass. The cost is worked out from the token counts in the server's
-log and the list prices, so it is close, not exact.
+cases can pass. The cost is worked out from the token counts in the server's log
+and the list prices, so it is close, not exact.
 
 | Model      | Effort | Passed  | Time per request | Cost of the run |
 | ---------- | ------ | ------- | ---------------- | --------------- |
@@ -141,8 +141,8 @@ Causes of the failures:
 
 Other notes:
 
-- Sonnet named an assignee by id ("zugewiesen an ben") despite the rule to
-  name things by title and name. Opus wrote "Ben Okafor".
+- Sonnet named an assignee by id ("zugewiesen an ben") despite the rule to name
+  things by title and name. Opus wrote "Ben Okafor".
 - Effort `low` made Opus neither faster nor clearly cheaper here.
 
 Kept: Opus 5.5 at medium, the default.

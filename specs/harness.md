@@ -18,10 +18,10 @@ notes and module describe their sites. They clone the harness, keep it as the
 `upstream` remote, and push it to a private repo of their own. All their sites
 share it, each in its own folder, on one branch.
 
-Everything the harness makes for a site is in `sites/<name>/`. In the
-harness's own `main`, `sites/` has only `sites/example-site/` (The example
-site). It never has a developer's site folder, so its updates do not conflict.
-A site's folder holds only two things:
+Everything the harness makes for a site is in `sites/<name>/`. In the harness's
+own `main`, `sites/` has only `sites/example-site/` (The example site). It never
+has a developer's site folder, so its updates do not conflict. A site's folder
+holds only two things:
 
 - `sites/<name>/module/`: the module, with its `tsconfig.json` (The check).
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
@@ -31,8 +31,7 @@ A site's folder holds only two things:
   their results.
 
 The agent reads the site's `notes.md` at the start of each session and keeps it
-up to date, so another machine or another developer goes on from the same
-point.
+up to date, so another machine or another developer goes on from the same point.
 
 ## The example site
 
@@ -43,17 +42,17 @@ agent to add the site and works with it as any developer would. The result is
 committed as it is.
 
 - `dicta-example-site` is an npm git dependency of the harness, pinned like
-  `dicta-action-server`, so its code is in `node_modules/dicta-example-site/`
-  on every machine.
+  `dicta-action-server`, so its code is in `node_modules/dicta-example-site/` on
+  every machine.
 - The site's code is given to the agent there. The module's `tsconfig.json`
-  points into `node_modules/`, the same path on every machine, and is
-  committed, so `npm run check` passes on every machine with no local file.
+  points into `node_modules/`, the same path on every machine, and is committed,
+  so `npm run check` passes on every machine with no local file.
 - It holds a `README.md` that says it is an example and is kept unchanged, so
   harness updates apply cleanly. The user's agent reads it as a model and never
   changes it.
 - The kit runs the harness check on it, and on small modules for each error and
-  warning, with `npm run test:harness` (`e2e/harness/`), so it keeps up with
-  the harness; the LLM check runs on it on demand.
+  warning, with `npm run test:harness` (`e2e/harness/`), so it keeps up with the
+  harness; the LLM check runs on it on demand.
 
 ## Updates
 
@@ -70,13 +69,13 @@ The upgrade guide covers the rest, in the order `contract-protocol.md` in
 
 ## The module
 
-`sites/<name>/module/` is the source of truth. The developer can review it
-there before anything in the site changes.
+`sites/<name>/module/` is the source of truth. The developer can review it there
+before anything in the site changes.
 
 The module reaches the site in one of two ways:
 
-- With the site's code: `run` calls the site's own functions, the ones its
-  pages call.
+- With the site's code: `run` calls the site's own functions, the ones its pages
+  call.
 - With only a running site, such as a test environment: `run` calls the site's
   HTTP API with `fetch`, the requests its pages send. A change then does not
   show on the page until it reloads; the agent tells the developer, and a
@@ -128,30 +127,29 @@ asks, the same way as the rest of the integration.
     real sessions (Checking a harness run);
   - writing capabilities: the rules in "What it teaches", with reasons and
     examples;
-  - adding dicta to the site: the integration methods, loading
-    `dicta-action-js` and the module on every page, running
-    `dicta-action-server`, issuing tokens;
+  - adding dicta to the site: the integration methods, loading `dicta-action-js`
+    and the module on every page, running `dicta-action-server`, issuing tokens;
   - adding voice: `dicta-js` and `dicta-server` (Voice input);
   - checking the module: the check command, looking at the running site and
     trying requests on it. The agent uses the browser tool it has, such as a
     browser extension or Playwright, and none is installed by the harness. It
-    signs in through the site's own login form, and it records the requests
-    the page sends for each action, so it sees the site's own requests. When a
+    signs in through the site's own login form, and it records the requests the
+    page sends for each action, so it sees the site's own requests. When a
     request to dicta goes wrong, it records the page's rounds to
     `dicta-action-server`, so it sees what the planner got and replied. For
-    requests the developer makes in their own browser, it turns on the round
-    log of `dicta-action-server` (`LOG_ROUNDS`) and finds their lines by user
-    or tab. A script it writes for this stays outside the harness;
+    requests the developer makes in their own browser, it turns on the round log
+    of `dicta-action-server` (`LOG_ROUNDS`) and finds their lines by user or
+    tab. A script it writes for this stays outside the harness;
   - upgrading: updating the harness, and the server, `dicta-action-js` and the
     module of a site in production.
 - `AGENTS.md`: the workflow the user's agent follows: read the site's
   `notes.md`, or create the site's folder, study the site, list what its users
   can do, write the module, run the check, integrate it when asked or guide the
-  developer through it, try it on the running site once the module is in it,
-  and update the harness when asked. It points to the guide for each step
-  instead of repeating it. The credentials of the site's test account go only
-  into `.env`; the site's `notes.md` names the account, never its password.
-  `CLAUDE.md` includes it.
+  developer through it, try it on the running site once the module is in it, and
+  update the harness when asked. It points to the guide for each step instead of
+  repeating it. The credentials of the site's test account go only into `.env`;
+  the site's `notes.md` names the account, never its password. `CLAUDE.md`
+  includes it.
 - `scripts/check/`: the check's code (The check).
 - `package.json` with the dependencies and the commands of The check, and
   `tsconfig.json`, the TypeScript settings the sites' modules extend.
@@ -177,14 +175,14 @@ site:
 - the module rules the types cannot express: `confirm` on every `write`,
   `destructive` and `external` capability, and `confirmOver`, when set, a whole
   number from 0;
-- warnings: a type list other than a type and `null` (What it teaches), a
-  module that cannot be loaded outside a browser (below), and a newer harness on
+- warnings: a type list other than a type and `null` (What it teaches), a module
+  that cannot be loaded outside a browser (below), and a newer harness on
   `upstream/main`, skipped when offline.
 
 An error fails the check; a warning does not. When the module cannot be loaded
 outside a browser, for example because the site's code needs more than the DOM
-stand-in has, the check warns and still runs the type check. Trying the
-module on the running site covers the rest.
+stand-in has, the check warns and still runs the type check. Trying the module
+on the running site covers the rest.
 
 The module's imports of the site's code follow the integration method (The
 module, Integration). `sites/<name>/module/tsconfig.json` extends the harness's
@@ -199,8 +197,8 @@ server.
 
 A task that changes `dicta-action-server` or `dicta-example-site`, or releases
 `dicta-action-js`, moves the harness's pin to the new commit or version, unless
-it says why not. The kit's checks then run on the example site with the new
-pin. A developer's copy keeps its pins until the developer updates the harness
+it says why not. The kit's checks then run on the example site with the new pin.
+A developer's copy keeps its pins until the developer updates the harness
 (Updates).
 
 A git pin is moved in `package.json` and in `package-lock.json` (its `version`
@@ -233,8 +231,8 @@ The harness teaches these, with the reasons and examples, in `docs/`:
   site gives no way to know that it saved, or saves only after a long delay, the
   agent tells the developer.
 - The `confirm` of an `external` capability names where the data goes, in a
-  short form the user knows, such as an email address or a site's name. Never
-  a long link, a token or other text the user cannot read.
+  short form the user knows, such as an email address or a site's name. Never a
+  long link, a token or other text the user cannot read.
 - `pageLoad` as the contract asks (`contract-capability.md` in
   `dicta-action-server`, Page changes), with the page load as the last action of
   `run`.
@@ -249,9 +247,9 @@ The harness teaches these, with the reasons and examples, in `docs/`:
   single action in its `run`.
 - A value the user can clear, such as a due date, has the type list
   `["<type>", "null"]`. In `run`, a field left out changes nothing, `null`
-  clears the value the way the site does, and any other value sets it. An
-  output field that can be empty has the same list. Type lists are used only
-  for a type or `null`.
+  clears the value the way the site does, and any other value sets it. An output
+  field that can be empty has the same list. Type lists are used only for a type
+  or `null`.
 - Trying the module on the running site includes a request that clears each
   value that can be cleared.
 

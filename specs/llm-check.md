@@ -4,13 +4,12 @@ The LLM check runs requests in plain words through an LLM planner of
 `dicta-action-server` (`architecture-planner.md` there) on the example site. It
 shows how well the planner, its prompt and the module work for real requests,
 and how fast and costly they are. It is worth running on demand after a change
-to a prompt, the module or the site, and the same cases compare planners,
-models and settings.
+to a prompt, the module or the site, and the same cases compare planners, models
+and settings.
 
-It lives in `e2e/llm/` and reuses the end-to-end setup and the reference
-module (`e2e.md`), or a harness-made module (Running).
-Only the planner differs: the server runs with an LLM planner instead of
-`stub`.
+It lives in `e2e/llm/` and reuses the end-to-end setup and the reference module
+(`e2e.md`), or a harness-made module (Running). Only the planner differs: the
+server runs with an LLM planner instead of `stub`.
 
 ## Running
 
@@ -27,11 +26,11 @@ Only the planner differs: the server runs with an LLM planner instead of
   logged them at startup, so it shows what really ran.
 - `HARNESS_SITE_DIR` runs a harness-made module in place of the reference
   module: the path of a site's folder in a copy of the harness, such as
-  `../dicta-action-harness/sites/example-site` (`harness.md`, Checking a
-  harness run). Its `module/` files are compiled like the reference module,
-  and the import map gets the `paths` of its `module/tsconfig.local.json`, or
-  of its `module/tsconfig.json` when there is no local one. The table's header
-  names the module.
+  `../dicta-action-harness/sites/example-site` (`harness.md`, Checking a harness
+  run). Its `module/` files are compiled like the reference module, and the
+  import map gets the `paths` of its `module/tsconfig.local.json`, or of its
+  `module/tsconfig.json` when there is no local one. The table's header names
+  the module.
 
 ## Cases
 
@@ -49,8 +48,7 @@ A case passes by its effects, never by the plan's steps: many plans are correct
 for one request.
 
 - The site's data: the test reads every task before and after the request, and
-  the difference must be exactly what the case expects. Nothing else may
-  change.
+  the difference must be exactly what the case expects. Nothing else may change.
 - How the request ended: done, stop, info or cancelled, from the element's
   history.
 - The confirmation text, where the case has one.
@@ -66,12 +64,11 @@ The cases:
 - Mark every task done.
 - Mark the tasks about one topic done, among other tasks: only those change.
 - Delete a task, with Continue; delete a task, with Cancel: the task stays.
-- Share a task with a teammate named by name: the confirmation shows the
-  email.
+- Share a task with a teammate named by name: the confirmation shows the email.
 - Ask what is due this week; ask who has a task: the done text names them.
 - Open a task's page by its title: the browser ends on its page.
-- An ambiguous date, such as next Friday: a question, answered by the case, or
-  a choice; either way the data ends right.
+- An ambiguous date, such as next Friday: a question, answered by the case, or a
+  choice; either way the data ends right.
 - Ask how to share a task: an info, and no change.
 - Ask about something off the site: a stop, and no change.
 - A request in German: done, and its text in German.
@@ -91,5 +88,5 @@ accepted answer.
 Runs worth keeping, such as a comparison of planners, models or settings, are
 recorded in `docs/llm-check-results.md`, newest first. Each entry has its date,
 the commits of `dicta-action-server` and this repo it ran on, and for each
-setting: the cases passed, the average time per request, the cost of the run
-and the causes of the failures.
+setting: the cases passed, the average time per request, the cost of the run and
+the causes of the failures.

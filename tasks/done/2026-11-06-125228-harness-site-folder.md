@@ -14,8 +14,8 @@ What it teaches).
     functions, or `fetch` to the site's HTTP API, with the page that shows old
     data until it reloads;
   - list capabilities with filters and a limit, and the limits behind them;
-  - bulk actions only when the site has one, and no loop over a single action
-    in `run`.
+  - bulk actions only when the site has one, and no loop over a single action in
+    `run`.
 - `docs/adding-dicta.md`: integration as a copy of `site/module/`, never edited
   in the site; the methods, such as an import alias, relative imports, a
   separate bundle loaded by a script tag, or `fetch` only, each with when it

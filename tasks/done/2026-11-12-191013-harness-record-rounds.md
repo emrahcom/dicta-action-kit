@@ -13,8 +13,7 @@ agent built its own relay between the page and the server to see the rounds.
   keeps no log of them. Simple English.
 - `AGENTS.md`: not changed; step 6 already points to that guide.
 
-Links follow the harness's current style (relative links to files and
-sections).
+Links follow the harness's current style (relative links to files and sections).
 
-Check: every link points to an existing file and heading; `npm run check` in
-the harness and `npm run test:harness` in the kit pass.
+Check: every link points to an existing file and heading; `npm run check` in the
+harness and `npm run test:harness` in the kit pass.

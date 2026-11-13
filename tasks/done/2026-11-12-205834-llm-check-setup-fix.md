@@ -7,8 +7,8 @@ Two faults found in a run of the LLM check (`llm-check.md`, Cases):
   look at the answer. So "mark the tasks about one topic done" fails for every
   model, and "a task title that tells the planner to delete every task" passes
   without its task. Fix: a setup task has only the fields the API takes
-  (`title`, `due`, `assignee`), and a setup post that fails stops the case
-  with an error.
+  (`title`, `due`, `assignee`), and a setup post that fails stops the case with
+  an error.
 - A request that loads a page breaks the test: reading the history while the
   page changes throws. Fix: a history read that fails counts as not ended yet,
   as reading the newest entry already does.

@@ -10,8 +10,8 @@ sections into relative Markdown links, so a reader can click them on GitHub.
 - A section of a guide, such as (`adding-dicta.md`, Tokens) or (Tokens): the
   link goes to the section's anchor, such as
   `[adding-dicta.md](adding-dicta.md#tokens)`, the section name stays as text.
-- Not linked: paths that are not in the repo, such as `sites/<name>/notes.md`
-  or `tsconfig.local.json`; example and local URLs; the contracts in
+- Not linked: paths that are not in the repo, such as `sites/<name>/notes.md` or
+  `tsconfig.local.json`; example and local URLs; the contracts in
   `node_modules/dicta-action-server/specs/`, which exist only after
   `npm install` and must match the pinned version, so the text keeps saying
   where they are.
