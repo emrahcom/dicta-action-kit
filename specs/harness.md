@@ -138,8 +138,10 @@ asks, the same way as the rest of the integration.
     signs in through the site's own login form, and it records the requests
     the page sends for each action, so it sees the site's own requests. When a
     request to dicta goes wrong, it records the page's rounds to the dicta
-    server, so it sees what the planner got and replied; the server keeps no
-    log of them. A script it writes for this stays outside the harness;
+    server, so it sees what the planner got and replied. For requests the
+    developer makes in their own browser, it turns on the dicta server's
+    round log (`LOG_ROUNDS`) and finds their lines by user or tab. A script it
+    writes for this stays outside the harness;
   - upgrading: updating the harness, and the server, `dicta-action-js` and the
     module of a site in production.
 - `AGENTS.md`: the workflow the user's agent follows: read the site's
