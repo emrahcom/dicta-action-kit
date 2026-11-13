@@ -158,6 +158,9 @@ asks, the same way as the rest of the integration.
 - `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
 - `.npmrc`: `allow-git=root`, so `npm install` fetches the git dependencies of
   `package.json` with every npm version; npm 12 fetches none by default.
+- `.prettierrc`: `{ "proseWrap": "always" }`, the same file as in the other
+  dicta repos. The harness Markdown is formatted with the kit's Prettier, which
+  reads this file; the harness has no format command.
 
 ## The check
 
