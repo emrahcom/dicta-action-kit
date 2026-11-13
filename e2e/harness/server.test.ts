@@ -33,6 +33,7 @@ async function round(port: number) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        tabId: "tab-1",
         text: "hello",
         time: "2026-11-06T10:00:00+01:00",
         state: {},
