@@ -233,6 +233,12 @@ The harness teaches these, with the reasons and examples, in `docs/`:
   developer.
 - Capabilities at the level of the user's actions, narrow enough that `confirm`
   can describe them.
+- The level follows the harm a call can do when the user did not ask for it,
+  since site data that other people wrote can steer the planner, and the user is
+  asked before every `destructive` and `external` call. A change to who can see
+  or do what, such as a role, a right or making something public, is `external`.
+  A change to how the user signs in, such as the email, the password or an
+  access key, is `destructive`. When unsure, the higher level.
 - Outputs carry the names users know next to ids, such as an assignee's name.
 - A capability that changes data ends as the site's own action ends: it returns
   only once the site has saved the change, and leaves the page as that action
