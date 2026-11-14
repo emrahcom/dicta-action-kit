@@ -27,8 +27,7 @@ holds only two things:
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
   decided with the developer: where the site's code or test environment is and
   how to start it, the integration method, the capability list the developer
-  approved, the problems listed for the developer, and the requests tried with
-  their results.
+  approved, and the problems listed for the developer.
 
 The agent reads the site's `notes.md` at the start of each session and keeps it
 up to date, so another machine or another developer goes on from the same point.
