@@ -140,6 +140,13 @@ asks, the same way as the rest of the integration.
     requests the developer makes in their own browser, it turns on the round log
     of `dicta-action-server` (`LOG_ROUNDS`) and finds their lines by user or
     tab. A script it writes for this stays outside the harness;
+  - request flows: a recommendation, not a rule. Write the site's use cases down
+    as flows, a few requests in plain words in the order a user makes them, each
+    with the result the user expects. Run them on the running site, fix what
+    goes wrong and run them again, until they all work. Trying a fix before it
+    is deployed makes the loop shorter. Results are judged, since the planner
+    does not answer the same way each time, and each run calls the planner and
+    costs money. It names no tool and gives no script, file format or steps;
   - upgrading: updating the harness, and the server, `dicta-action-js` and the
     module of a site in production.
 - `AGENTS.md`: the workflow the user's agent follows: read the site's
