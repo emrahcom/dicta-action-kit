@@ -231,7 +231,7 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - The guides teach what a module needs; the full rules are in the contracts of
   the server version the harness pins, in
   `node_modules/dicta-action-server/specs/` (`architecture.md` in
-  `dicta-action-server`, Site context): `contract-capability.md`,
+  `dicta-action-server`, Use by the harness): `contract-capability.md`,
   `contract-context.md`, `contract-plan.md` for confirmations and the limits of
   a plan, and `contract-protocol.md` (Limits) for the other limits. When a guide
   and a contract differ, the contract is right, and the agent tells the
