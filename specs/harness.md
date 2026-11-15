@@ -23,7 +23,8 @@ own `main`, `sites/` has only `sites/example-site/` (The example site). It never
 has a developer's site folder, so its updates do not conflict. A site's folder
 holds only two things:
 
-- `sites/<name>/module/`: the module, with its `tsconfig.json` (The check).
+- `sites/<name>/module/`: the module, with its main file `index.ts` and its
+  `tsconfig.json` (The check).
 - `sites/<name>/notes.md`: what the agent learned about the site and what was
   decided with the developer: where the site's code or test environment is and
   how to start it, the integration method, the capability list the developer
@@ -49,9 +50,10 @@ committed as it is.
 - It holds a `README.md` that says it is an example and is kept unchanged, so
   harness updates apply cleanly. The user's agent reads it as a model and never
   changes it.
-- The kit runs the harness check on it, and on small modules for each error and
-  warning, with `npm run test:harness` (`e2e/harness/`), so it keeps up with the
-  harness; the LLM check runs on it on demand.
+- The kit tests the harness with `npm run test:harness` (`e2e/harness/`), so it
+  keeps up with the harness: the check on it, on the reference module and on
+  small modules for each error and warning, and one round through
+  `npm run server`. The LLM check runs on it on demand.
 
 ## Updates
 
@@ -161,7 +163,8 @@ asks, the same way as the rest of the integration.
   `tsconfig.json`, the TypeScript settings the sites' modules extend.
 - `.env.example`: the settings of `npm run server` (The check), and the site's
   test account, commented out.
-- `.gitignore`: `node_modules/`, `.env` and every `tsconfig.local.json`.
+- `.gitignore`: `node_modules/`, `.env`, every `tsconfig.local.json` and Vim
+  swap files (`*.swp`).
 - `.npmrc`: `allow-git=root`, so `npm install` fetches the git dependencies of
   `package.json` with every npm version; npm 12 fetches none by default.
 - `.prettierrc`: `{ "proseWrap": "always" }`, the same file as in the other
@@ -175,8 +178,10 @@ every site. It needs only `npm install`: it runs in Node, with a TypeScript
 loader (`tsx`) and a DOM stand-in (`happy-dom`), never in a browser. For each
 site:
 
+- the module's `index.ts` and `tsconfig.json` are there;
 - a type check of the module, against the types `dicta-action-js` exports and
-  the site's code;
+  the site's code. Type errors in the site's own code are only counted, in a
+  note: the site builds its code with its own settings;
 - the site context built from the module with `dicta-action-js`'s own
   `buildContext`, then checked with `dicta-action-server`'s own `checkContext`
   (`src/context.ts`), and its size: at most 64 KB, the UTF-8 bytes of its JSON
@@ -188,10 +193,10 @@ site:
   that cannot be loaded outside a browser (below), and a newer harness on
   `upstream/main`, skipped when offline.
 
-An error fails the check; a warning does not. When the module cannot be loaded
-outside a browser, for example because the site's code needs more than the DOM
-stand-in has, the check warns and still runs the type check. Trying the module
-on the running site covers the rest.
+An error fails the check; a warning or a note does not. When the module cannot
+be loaded outside a browser, for example because the site's code needs more than
+the DOM stand-in has, the check warns and still runs the type check. Trying the
+module on the running site covers the rest.
 
 The module's imports of the site's code follow the integration method (The
 module, Integration). `sites/<name>/module/tsconfig.json` extends the harness's
