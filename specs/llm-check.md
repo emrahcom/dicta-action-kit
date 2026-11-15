@@ -89,4 +89,7 @@ Runs worth keeping, such as a comparison of planners, models or settings, are
 recorded in `docs/llm-check-results.md`, newest first. Each entry has its date,
 the commits of `dicta-action-server` and this repo it ran on, and for each
 setting: the cases passed, the average time per request, the cost of the run and
-the causes of the failures.
+the causes of the failures. The cost comes from the token counts in
+`test-results/llm.json`, by kind (input, cache read, cache write and output), at
+the provider's prices on the day of the run; the table adds the input kinds up,
+so it cannot give the cost.
