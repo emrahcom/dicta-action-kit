@@ -30,9 +30,11 @@ contracts. It is what a good harness run should make for the example site
 ## Setup
 
 - The tests start the example site and `dicta-action-server`, each on its own
-  port, from the sibling folders. The server runs with `PLANNER=stub` and a test
-  `JWT_SECRET`. The sibling repos are used as they are: their packages installed
-  and `dicta-action-js` built.
+  port, from the sibling folders. The server runs with `PLANNER=stub`, a test
+  `JWT_SECRET` and `PLANS_PER_CHECKPOINT=1`, so the second plan of a request is
+  a checkpoint (`contract-plan.md` in `dicta-action-server`, Checkpoint). The
+  sibling repos are used as they are: their packages installed and
+  `dicta-action-js` built.
 - The site's pages get `dicta-action-js`, the module and a `<dicta-action>`
   element on their way to the browser: the test adds them to each page's HTML
   and serves their files from the site's origin. This is repeated on every page
@@ -57,3 +59,5 @@ outcome in the site's own data, through its API, and in the element's history.
   with a `navigated` report, and the new page's `state`.
 - A question, answered with an option.
 - Cancel while a step runs.
+- A request with two plans: the second is a checkpoint and shows its `progress`;
+  Continue runs it, and Cancel ends the request before its first step.
