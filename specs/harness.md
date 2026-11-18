@@ -241,6 +241,10 @@ The harness teaches these, with the reasons and examples, in `docs/`:
 - The level of a capability by the harm of a call the user did not ask for, with
   sign-in and rights as examples (`contract-capability.md`, Capabilities).
 - Outputs carry the names users know next to ids, such as an assignee's name.
+- A capability that creates something returns its id in a small output
+  (`contract-protocol.md` in `dicta-action-server`, Request body).
+- In tries, a checkpoint is answered with Continue (`contract-plan.md` in
+  `dicta-action-server`, Checkpoint).
 - A capability that changes data ends as the site's own action ends: it returns
   only once the site has saved the change, and leaves the page as that action
   itself leaves it, but does not copy its page load or change of view. When the
