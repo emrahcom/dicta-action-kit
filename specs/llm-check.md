@@ -20,6 +20,10 @@ server runs with an LLM planner instead of `stub`.
   `ANTHROPIC_API_KEY`, `PLANNER_CLAUDE_MODEL` and `PLANNER_CLAUDE_EFFORT`
   (`architecture.md` in `dicta-action-server`, Configuration). Without the
   planner's key, the tests are skipped.
+- The server runs with `PLANS_PER_CHECKPOINT=1`, so every second plan of a
+  request is a checkpoint, and the cases test checkpoints with a real LLM
+  (`contract-plan.md` in `dicta-action-server`, Checkpoint). The numbers of a
+  run are therefore not the same as with the default of 10.
 - A run writes `test-results/llm.json` and prints a short table: for each
   request, passed or failed, the rounds, the time and the token counts from the
   server's log. Its header names the planner and its settings as the server
@@ -36,9 +40,13 @@ server runs with an LLM planner instead of `stub`.
 
 Each case is a request as a user would write it. When the element asks for a
 confirmation, the test checks its text and presses Continue, or Cancel when the
-case says so. When the planner asks a question, the test gives the case's
-answer; in a case without one, it cancels, and the case fails. The browser's
-date and time zone are fixed, so cases about dates have one right answer.
+case says so. At a checkpoint, which the test knows from the server's reply, it
+checks that the plan has a `progress` that ends with a question mark, and
+presses Continue. The progress texts are kept in `test-results/llm.json`, so
+their wording and language can be read after the run. When the planner asks a
+question, the test gives the case's answer; in a case without one, it cancels,
+and the case fails. The browser's date and time zone are fixed, so cases about
+dates have one right answer.
 
 A case can have several requests, made one after another in the same tab, so a
 later one can refer to an earlier one through the history. Each earlier request
