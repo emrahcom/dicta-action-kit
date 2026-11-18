@@ -17,6 +17,8 @@ export type Result = {
   ms: number;
   usage: Usage;
   confirm?: string;
+  // The progress of each checkpoint, in order (specs/llm-check.md, Cases).
+  progress?: string[];
   question?: string;
   ends?: string;
   text?: string;

@@ -24,10 +24,12 @@ export default defineConfig<{ harnessSite: string | undefined }>({
           command: `node src/index.ts 2>&1 | tee ${SERVER_LOG}`,
           cwd: "../dicta-action-server",
           // The planner's own variables come from the environment.
+          // Every second plan is a checkpoint (specs/llm-check.md, Running).
           env: {
             PORT: String(SERVER_PORT),
             PLANNER,
             JWT_SECRET,
+            PLANS_PER_CHECKPOINT: "1",
           },
           wait: { stdout: /listening on port/ },
           reuseExistingServer: false,

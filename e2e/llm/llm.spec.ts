@@ -117,11 +117,29 @@ async function run(page: Page, c: Case): Promise<Result> {
   await open(page);
   const before = (await tasks(page)) as Task[];
   let rounds = 0;
+  // The progress of each checkpoint the server sent and the element has not
+  // asked yet, and the replies still being read.
+  const checkpoints: string[] = [];
+  const reading: Promise<void>[] = [];
   page.on("response", (response) => {
     if (response.url().endsWith(ROUND) && response.status() === 200) {
       rounds += 1;
+      reading.push(
+        response
+          .json()
+          .then((body: { reply?: { plan?: Record<string, unknown> } }) => {
+            const plan = body.reply?.plan;
+            if (plan?.checkpoint === true) {
+              checkpoints.push(
+                typeof plan.progress === "string" ? plan.progress : "",
+              );
+            }
+          })
+          .catch(() => {}),
+      );
     }
   });
+  const progress: string[] = [];
   const mark = logMark();
   const started = Date.now();
   let confirm: string | undefined;
@@ -142,9 +160,25 @@ async function run(page: Page, c: Case): Promise<Result> {
       const state = await view(page);
       const text = page.locator('[part~="text"]');
       if (state === "confirmation") {
-        confirm = (await text.textContent()) ?? "";
-        const button = c.cancel ? "Cancel" : "Continue";
-        await page.getByRole("button", { name: button, exact: true }).click();
+        await Promise.all(reading);
+        const asked = checkpoints.shift();
+        if (asked !== undefined) {
+          // A checkpoint, before its plan's own confirmations: always
+          // Continue, and not the case's confirmation.
+          progress.push(asked);
+          if (!asked.trim().endsWith("?")) {
+            problems.push(
+              `a checkpoint without a question: ${JSON.stringify(asked)}`,
+            );
+          }
+          await page
+            .getByRole("button", { name: "Continue", exact: true })
+            .click();
+        } else {
+          confirm = (await text.textContent()) ?? "";
+          const button = c.cancel ? "Cancel" : "Continue";
+          await page.getByRole("button", { name: button, exact: true }).click();
+        }
       } else if (state === "question") {
         question = (await text.textContent()) ?? "";
         if (c.answer === undefined) {
@@ -203,6 +237,7 @@ async function run(page: Page, c: Case): Promise<Result> {
     ms,
     usage: usageSince(mark),
     ...(confirm === undefined ? {} : { confirm }),
+    ...(progress.length === 0 ? {} : { progress }),
     ...(question === undefined ? {} : { question }),
     ...(outcome ? { ends: outcome.type } : {}),
     ...(outcome?.text === undefined ? {} : { text: outcome.text }),
