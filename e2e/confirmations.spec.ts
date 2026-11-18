@@ -58,3 +58,73 @@ test("a share asks first, with the teammate's email", async ({ page }) => {
     exchange: [{ plan, report: {} }],
   });
 });
+
+// Checkpoints: with PLANS_PER_CHECKPOINT=1, the second plan of a request asks
+// first (contract-plan.md in dicta-action-server, Checkpoint).
+
+const progress = "One task is done. Next: the second one. Shall I go on?";
+
+function markBothDone() {
+  const first = {
+    steps: [{ call: "tasks.setDone", args: { id: "t2", done: true } }],
+  };
+  const second = {
+    steps: [{ call: "tasks.setDone", args: { id: "t3", done: true } }],
+    progress,
+  };
+  return {
+    first,
+    second,
+    replies: [
+      { type: "plan", plan: first },
+      { type: "plan", plan: second },
+      { type: "done" },
+    ],
+  };
+}
+
+async function doneIds(page: Parameters<typeof tasks>[0]) {
+  return (await tasks(page))
+    .filter((task) => task.done === true)
+    .map((task) => task.id);
+}
+
+test("a checkpoint shows its progress, and Continue runs the plan", async ({
+  page,
+}) => {
+  const { first, second, replies } = markBothDone();
+  await open(page);
+  await submit(page, replies);
+  await expect(page.locator(text)).toHaveText(progress);
+  await page.getByRole("button", { name: "Continue" }).click();
+  expect(await ended(page)).toMatchObject({
+    outcome: { type: "done" },
+    exchange: [
+      { plan: first, report: {} },
+      { plan: { ...second, checkpoint: true }, report: {} },
+    ],
+  });
+  expect(await doneIds(page)).toEqual(["t1", "t2", "t3"]);
+});
+
+test("Cancel at a checkpoint ends the request before its plan runs", async ({
+  page,
+}) => {
+  const { replies } = markBothDone();
+  await open(page);
+  await submit(page, replies);
+  await expect(page.locator(text)).toHaveText(progress);
+  await page.getByRole("button", { name: "Cancel" }).click();
+  expect(await ended(page)).toMatchObject({
+    outcome: { type: "cancelled" },
+    exchange: [
+      { report: {} },
+      {
+        plan: { checkpoint: true },
+        report: { halt: { step: 1, code: "cancelled", message: "Cancelled" } },
+      },
+    ],
+  });
+  // Only the first plan ran; t1 was done from the start.
+  expect(await doneIds(page)).toEqual(["t1", "t2"]);
+});

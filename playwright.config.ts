@@ -17,7 +17,13 @@ export default defineConfig({
     {
       command: "node src/index.ts",
       cwd: "../dicta-action-server",
-      env: { PORT: String(SERVER_PORT), PLANNER: "stub", JWT_SECRET },
+      // Every second plan is a checkpoint (specs/e2e.md, Setup).
+      env: {
+        PORT: String(SERVER_PORT),
+        PLANNER: "stub",
+        JWT_SECRET,
+        PLANS_PER_CHECKPOINT: "1",
+      },
       wait: { stdout: /listening on port/ },
       reuseExistingServer: false,
     },
