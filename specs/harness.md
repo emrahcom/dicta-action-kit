@@ -79,8 +79,9 @@ The module reaches the site in one of two ways:
   call.
 - With only a running site, such as a test environment: `run` calls the site's
   HTTP API with `fetch`, the requests its pages send. A change then does not
-  show on the page until it reloads; the agent tells the developer, and a
-  capability may end with a page load.
+  show on the page until it reloads; the agent tells the developer. No
+  capability that changes data loads the page; one capability with `pageLoad`
+  loads it again, and its `desc` says to call it last, after the changes.
 
 ## Integration
 
