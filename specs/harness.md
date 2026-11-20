@@ -226,52 +226,35 @@ with `tsx`, for trying requests on the running site. Its settings come from a
 
 ## What it teaches
 
-The harness teaches these, with the reasons and examples, in `docs/`:
+The guides teach what a module needs, with the reasons and examples, in `docs/`.
+The full rules are the contracts of the server version the harness pins, in
+`node_modules/dicta-action-server/specs/`. When a guide and a contract differ,
+the contract is right, and the agent tells the developer. They teach:
 
-- The guides teach what a module needs; the full rules are in the contracts of
-  the server version the harness pins, in
-  `node_modules/dicta-action-server/specs/` (`architecture.md` in
-  `dicta-action-server`, Use by the harness): `contract-capability.md`,
-  `contract-context.md`, `contract-plan.md` for confirmations and the limits of
-  a plan, and `contract-protocol.md` (Limits) for the other limits. When a guide
-  and a contract differ, the contract is right, and the agent tells the
-  developer.
-- Capabilities at the level of the user's actions, narrow enough that `confirm`
-  can describe them.
-- The level of a capability by the harm of a call the user did not ask for, with
-  sign-in and rights as examples (`contract-capability.md`, Capabilities).
-- Outputs carry the names users know next to ids, such as an assignee's name.
-- A capability that creates something returns its id in a small output
-  (`contract-protocol.md` in `dicta-action-server`, Request body).
-- In tries, a checkpoint is answered with Continue (`contract-plan.md` in
-  `dicta-action-server`, Checkpoint).
-- A capability that changes data ends as the site's own action ends: it returns
-  only once the site has saved the change, and leaves the page as that action
-  itself leaves it, but does not copy its page load or change of view. When the
-  site gives no way to know that it saved, or saves only after a long delay, the
-  agent tells the developer.
-- The `confirm` of an `external` capability names where the data goes, in a
-  short form the user knows, such as an email address or a site's name. Never a
-  long link, a token or other text the user cannot read.
-- `pageLoad` as the contract asks (`contract-capability.md` in
-  `dicta-action-server`, Page changes), with the page load as the last action of
-  `run`.
-- A small `state` and small outputs.
-- A list capability whose result can grow takes the filters the site's own list
-  offers, such as a search text, a status or a date range, and a limit; its
-  `desc` says how many items it returns at most. Included outputs are limited
-  (`contract-protocol.md` in `dicta-action-server`, Limits), and so are
-  `forEach` items (`contract-plan.md`, Limits).
-- A bulk action, such as "select all, delete", is a capability only when the
-  site has one. Otherwise a plan uses `forEach`, and no capability loops over a
-  single action in its `run`.
-- A value the user can clear, such as a due date, has the type list
-  `["<type>", "null"]`. In `run`, a field left out changes nothing, `null`
-  clears the value the way the site does, and any other value sets it. An output
-  field that can be empty has the same list. Type lists are used only for a type
-  or `null`.
-- Trying the module on the running site includes a request that clears each
-  value that can be cleared.
+- Capabilities: at the level of the user's actions, narrow enough that `confirm`
+  can describe them. A bulk action, such as "select all, delete", only when the
+  site has one; otherwise a plan uses `forEach`, and no `run` loops over a
+  single action.
+- Levels and confirmations: the level by the harm of a call the user did not ask
+  for, with sign-in and rights as examples (`contract-capability.md`,
+  Capabilities). The `confirm` of an `external` capability names where the data
+  goes in a short form the user knows, never a long link or a token.
+- Changes: a capability returns once the site has saved the change, and leaves
+  the page as the site's own action leaves it, without copying its page load or
+  change of view. When the site gives no way to know that it saved, or saves
+  only after a long delay, the agent tells the developer. `pageLoad` as the
+  contract asks (`contract-capability.md`, Page changes).
+- Outputs: the names users know next to ids, a small `state` and small outputs,
+  and a created id in a small output (`contract-protocol.md`, Request body).
+- Lists: one that can grow takes the filters the site's own list offers and a
+  limit, and its `desc` says how many items it returns at most
+  (`contract-protocol.md` and `contract-plan.md`, Limits).
+- Values that can be cleared: the type list `["<type>", "null"]`, for an
+  argument and for an output field that can be empty; `null` clears the value
+  the way the site does. Type lists are used only for a type or `null`.
+- Tries on the running site: a request that clears each value that can be
+  cleared, and a checkpoint answered with Continue (`contract-plan.md`,
+  Checkpoint).
 
 ## Checking a harness run
 
