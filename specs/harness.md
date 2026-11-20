@@ -132,11 +132,14 @@ asks, the same way as the rest of the integration.
     and the module on every page, running `dicta-action-server`, issuing tokens;
   - adding voice: `dicta-js` and `dicta-server` (Voice input);
   - checking the module: the check command, looking at the running site and
-    trying requests on it. The agent uses the browser tool it has, such as a
-    browser extension or Playwright, and none is installed by the harness. It
-    signs in through the site's own login form, and it records the requests the
-    page sends for each action, so it sees the site's own requests. When a
-    request to dicta goes wrong, it records the page's rounds to
+    trying requests on it: one for each capability, one that clears each value
+    that can be cleared and one over many items; a long request that asks
+    whether to go on is read and answered with Continue (`contract-plan.md` in
+    `dicta-action-server`, Checkpoint). The agent uses the browser tool it has,
+    such as a browser extension or Playwright, and none is installed by the
+    harness. It signs in through the site's own login form, and it records the
+    requests the page sends for each action, so it sees the site's own requests.
+    When a request to dicta goes wrong, it records the page's rounds to
     `dicta-action-server`, so it sees what the planner got and replied. For
     requests the developer makes in their own browser, it turns on the round log
     of `dicta-action-server` (`LOG_ROUNDS`) and finds their lines by user or
@@ -226,35 +229,36 @@ with `tsx`, for trying requests on the running site. Its settings come from a
 
 ## What it teaches
 
-The guides teach what a module needs, with the reasons and examples, in `docs/`.
-The full rules are the contracts of the server version the harness pins, in
-`node_modules/dicta-action-server/specs/`. When a guide and a contract differ,
-the contract is right, and the agent tells the developer. They teach:
+The writing capabilities guide teaches these points. The contracts of the pinned
+server (`node_modules/dicta-action-server/specs/`) hold the module format and
+the limits, and win when the two differ; the points below add the harness's own
+rules.
 
 - Capabilities: at the level of the user's actions, narrow enough that `confirm`
-  can describe them. A bulk action, such as "select all, delete", only when the
-  site has one; otherwise a plan uses `forEach`, and no `run` loops over a
-  single action.
-- Levels and confirmations: the level by the harm of a call the user did not ask
-  for, with sign-in and rights as examples (`contract-capability.md`,
-  Capabilities). The `confirm` of an `external` capability names where the data
-  goes in a short form the user knows, never a long link or a token.
+  can describe them. They call the code the site's buttons call and never go
+  around its checks. They take the values a user would give, since a plan
+  computes nothing (`contract-plan.md`, Steps). A bulk action, such as "select
+  all, delete", only when the site has one; otherwise a plan uses `forEach`, and
+  no `run` loops over a single action.
+- Levels and confirmations: levels as the contract gives them
+  (`contract-capability.md`, Capabilities). The `confirm` of an `external`
+  capability names where the data goes in a short form the user knows, never a
+  long link or a token.
 - Changes: a capability returns once the site has saved the change, and leaves
   the page as the site's own action leaves it, without copying its page load or
   change of view. When the site gives no way to know that it saved, or saves
   only after a long delay, the agent tells the developer. `pageLoad` as the
   contract asks (`contract-capability.md`, Page changes).
-- Outputs: the names users know next to ids, a small `state` and small outputs,
-  and a created id in a small output (`contract-protocol.md`, Request body).
+- Sizes: a small `state`, small outputs and short descriptions
+  (`contract-protocol.md`, Limits).
+- Outputs: the names users know next to ids, and a created id in an output small
+  enough to be kept (`contract-protocol.md`, Request body).
 - Lists: one that can grow takes the filters the site's own list offers and a
   limit, and its `desc` says how many items it returns at most
-  (`contract-protocol.md` and `contract-plan.md`, Limits).
-- Values that can be cleared: the type list `["<type>", "null"]`, for an
-  argument and for an output field that can be empty; `null` clears the value
-  the way the site does. Type lists are used only for a type or `null`.
-- Tries on the running site: a request that clears each value that can be
-  cleared, and a checkpoint answered with Continue (`contract-plan.md`,
-  Checkpoint).
+  (`contract-plan.md`, Limits).
+- Values that can be cleared: an argument or an output field that can be empty
+  has the type list `["<type>", "null"]`, and `null` clears the value the way
+  the site does. Type lists are used only for a type or `null`.
 
 ## Checking a harness run
 
