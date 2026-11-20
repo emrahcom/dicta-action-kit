@@ -1,16 +1,9 @@
-import { ended, expect, open, submit, tasks, test } from "./setup.ts";
-
-const ROUND = "/dicta-action/v1/round";
+import { ended, expect, open, rounds, submit, tasks, test } from "./setup.ts";
 
 test("a step that opens a task's page goes on in the new page", async ({
   page,
 }) => {
-  const bodies: Record<string, unknown>[] = [];
-  page.on("response", (response) => {
-    if (response.url().endsWith(ROUND) && response.status() === 200) {
-      bodies.push(response.request().postDataJSON());
-    }
-  });
+  const responses = rounds(page);
   const plan = {
     steps: [
       { call: "pages.openTask", args: { id: "t2" } },
@@ -21,6 +14,9 @@ test("a step that opens a task's page goes on in the new page", async ({
   await submit(page, [{ type: "plan", plan }, { type: "done" }]);
   await expect(page).toHaveURL(/\/tasks\/t2$/);
   expect(await ended(page)).toMatchObject({ outcome: { type: "done" } });
+  const bodies = responses
+    .filter((response) => response.status() === 200)
+    .map((response) => response.request().postDataJSON());
   expect(bodies[1]).toMatchObject({
     state: { page: "task", id: "t2" },
     exchange: [
@@ -66,12 +62,7 @@ test("a question is answered with an option", async ({ page }) => {
 test("Cancel while a step runs lets the step finish and runs no more", async ({
   page,
 }) => {
-  let rounds = 0;
-  page.on("response", (response) => {
-    if (response.url().endsWith(ROUND) && response.status() === 200) {
-      rounds += 1;
-    }
-  });
+  const responses = rounds(page);
   // The first step's call to the site is held until the test lets it go.
   let release = () => {};
   const held = new Promise<void>((resolve) => {
@@ -102,5 +93,7 @@ test("Cancel while a step runs lets the step finish and runs no more", async ({
     (await tasks(page)).map((task) => [task.id, task.done]),
   );
   expect(done).toMatchObject({ t2: true, t3: false });
-  expect(rounds).toBe(1);
+  expect(
+    responses.filter((response) => response.status() === 200),
+  ).toHaveLength(1);
 });

@@ -4,7 +4,12 @@
 
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { test as base, expect, type Page } from "@playwright/test";
+import {
+  test as base,
+  expect,
+  type Page,
+  type Response,
+} from "@playwright/test";
 import { SignJWT } from "jose";
 import { HARNESS_DIST, harnessImports } from "./llm/harness-site.ts";
 
@@ -14,7 +19,12 @@ export const SITE_PORT = 4280;
 export const SERVER_PORT = 4281;
 export const JWT_SECRET = "dicta-e2e-test-secret-0123456789";
 
-const SITE = `http://localhost:${SITE_PORT}`;
+export const SITE = `http://localhost:${SITE_PORT}`;
+// The path of the protocol's rounds on the server.
+export const ROUND = "/dicta-action/v1/round";
+// The text part of the element: a confirmation, a question or a notice.
+export const TEXT = '[part~="text"]';
+
 const SERVER = `http://localhost:${SERVER_PORT}`;
 const CLIENT_DIST = new URL("../../dicta-action-js/dist/", import.meta.url);
 const MODULE_DIST = new URL("module/dist/", import.meta.url);
@@ -72,6 +82,16 @@ async function token(expired: boolean) {
     .sign(new TextEncoder().encode(JWT_SECRET));
 }
 
+// The local file for a served path such as /e2e/module/teamboard.js: the
+// path after /e2e/<folder>/, in dist.
+function fileFor(url: string, dist: string) {
+  const parts = new URL(url).pathname.split("/").slice(3);
+  if (parts.includes("..")) {
+    throw new Error(`no such file: ${url}`);
+  }
+  return join(dist, ...parts);
+}
+
 export const test = base.extend<{ harnessSite: string | undefined }>({
   // Set only by the LLM check, from HARNESS_SITE_DIR.
   harnessSite: [undefined, { option: true }],
@@ -101,19 +121,9 @@ export const test = base.extend<{ harnessSite: string | undefined }>({
   },
 });
 
-// The local file for a served path such as /e2e/module/teamboard.js: the
-// path after /e2e/<folder>/, in dist.
-function fileFor(url: string, dist: string) {
-  const parts = new URL(url).pathname.split("/").slice(3);
-  if (parts.includes("..")) {
-    throw new Error(`no such file: ${url}`);
-  }
-  return join(dist, ...parts);
-}
-
 // Opens the task list and waits until the element has its module.
-export async function open(page: Page, path = "/") {
-  await page.goto(path);
+export async function open(page: Page) {
+  await page.goto("/");
   await page.waitForFunction(
     () =>
       (document.querySelector("dicta-action") as { module?: object } | null)
@@ -121,17 +131,38 @@ export async function open(page: Page, path = "/") {
   );
 }
 
-// Submits a request for the stub planner: its text is the replies, in order.
-export function submit(page: Page, replies: unknown[]) {
+// Passes text to the element, as a page passes what the user typed.
+export function say(page: Page, text: string) {
   return page.evaluate(
-    (text) =>
+    (value) =>
       (
         document.querySelector("dicta-action") as unknown as {
           submit(text: string): void;
         }
-      ).submit(text),
-    JSON.stringify(replies),
+      ).submit(value),
+    text,
   );
+}
+
+// Submits a request for the stub planner: its text is the replies, in order.
+export function submit(page: Page, replies: unknown[]) {
+  return say(page, JSON.stringify(replies));
+}
+
+// Collects the responses on the round path as they arrive, and passes each
+// one to arrived.
+export function rounds(
+  page: Page,
+  arrived: (response: Response) => void = () => {},
+) {
+  const responses: Response[] = [];
+  page.on("response", (response) => {
+    if (response.url().endsWith(ROUND)) {
+      responses.push(response);
+      arrived(response);
+    }
+  });
+  return responses;
 }
 
 // The element's history, oldest first.

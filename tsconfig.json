@@ -5,6 +5,9 @@
     "moduleResolution": "bundler",
     "lib": ["es2022", "dom"],
     "strict": true,
+    // Library types are not checked: those of happy-dom, which the harness
+    // check uses, name a stream type that @types/node 24 does not have.
+    "skipLibCheck": true,
     "noEmit": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
@@ -17,6 +20,11 @@
       "teamboard/*": ["../dicta-example-site/web/*.ts"]
     }
   },
-  "include": ["e2e", "playwright.config.ts", "playwright.llm.config.ts"],
+  "include": [
+    "e2e",
+    "playwright.config.ts",
+    "playwright.llm.config.ts",
+    "../dicta-action-harness/scripts/check/*.ts"
+  ],
   "exclude": ["e2e/module/dist", "e2e/module/harness-dist", "e2e/harness/sites"]
 }

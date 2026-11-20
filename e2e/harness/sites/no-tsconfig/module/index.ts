@@ -1,4 +1,4 @@
-// A module the check passes.
+// The good module, without its tsconfig.json.
 
 import { type CapabilityModule, dictaCapabilities } from "dicta-action-js";
 

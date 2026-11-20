@@ -4,12 +4,10 @@
 
 import assert from "node:assert/strict";
 import { type ChildProcess, spawn } from "node:child_process";
-import { existsSync } from "node:fs";
 import { createServer } from "node:net";
-import { join, resolve } from "node:path";
 import { after, test } from "node:test";
+import { assertInstalled, HARNESS } from "./harness.ts";
 
-const harness = resolve(import.meta.dirname, "../../../dicta-action-harness");
 let server: ChildProcess | undefined;
 
 after(() => {
@@ -51,13 +49,10 @@ async function round(port: number) {
 }
 
 test("npm run server answers a round", async () => {
-  assert.ok(
-    existsSync(join(harness, "node_modules")),
-    "run npm install in ../dicta-action-harness first",
-  );
+  assertInstalled();
   const port = await freePort();
   server = spawn("npm", ["run", "server"], {
-    cwd: harness,
+    cwd: HARNESS,
     detached: true,
     stdio: "ignore",
     env: {

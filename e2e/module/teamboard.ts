@@ -53,18 +53,18 @@ function brief(
   { id, title, due, done, assignee }: Task,
   teammates: Teammate[],
 ) {
-  const teammate = teammates.find((t) => t.id === assignee);
+  const person = teammates.find((t) => t.id === assignee);
   return {
     id,
     title,
     due,
     done,
-    assignee: teammate ? { id: teammate.id, name: teammate.name } : null,
+    assignee: person ? { id: person.id, name: person.name } : null,
   };
 }
 
 // The task's title, for a confirmation the user can read.
-async function title(taskId: string) {
+async function taskTitle(taskId: string) {
   return (await getTask(taskId)).title;
 }
 
@@ -150,11 +150,19 @@ const teamboard: CapabilityModule = {
       output: { type: "object", properties: { id: { type: "string" } } },
       confirm: async ({ title }: { title: string }) =>
         `Add the task "${title}"`,
-      run: async (args: { title: string; due?: string; assignee?: string }) => {
+      run: async ({
+        title,
+        due,
+        assignee,
+      }: {
+        title: string;
+        due?: string;
+        assignee?: string;
+      }) => {
         const task = await actions.addTask(
-          args.title,
-          args.due ?? null,
-          args.assignee ?? null,
+          title,
+          due ?? null,
+          assignee ?? null,
         );
         return { id: task.id };
       },
@@ -172,7 +180,7 @@ const teamboard: CapabilityModule = {
         },
         required: ["id"],
       },
-      confirm: async ({ id }: Id) => `Change the task "${await title(id)}"`,
+      confirm: async ({ id }: Id) => `Change the task "${await taskTitle(id)}"`,
       run: async ({
         id,
         ...changes
@@ -193,7 +201,7 @@ const teamboard: CapabilityModule = {
         required: ["id", "done"],
       },
       confirm: async ({ id, done }: Id & { done: boolean }) =>
-        `Mark "${await title(id)}" as ${done ? "done" : "not done"}`,
+        `Mark "${await taskTitle(id)}" as ${done ? "done" : "not done"}`,
       run: async ({ id, done }: Id & { done: boolean }) => {
         await actions.setDone(id, done);
       },
@@ -202,7 +210,7 @@ const teamboard: CapabilityModule = {
       level: "destructive",
       desc: "Deletes a task.",
       args: { type: "object", properties: { id }, required: ["id"] },
-      confirm: async ({ id }: Id) => `Delete the task "${await title(id)}"`,
+      confirm: async ({ id }: Id) => `Delete the task "${await taskTitle(id)}"`,
       run: async ({ id }: Id) => {
         await actions.deleteTask(id);
       },
@@ -217,7 +225,7 @@ const teamboard: CapabilityModule = {
       },
       confirm: async ({ id, teammate }: Id & { teammate: string }) => {
         const person = (await listTeammates()).find((t) => t.id === teammate);
-        return `Share "${await title(id)}" with ${person?.email ?? teammate}`;
+        return `Share "${await taskTitle(id)}" with ${person?.email ?? teammate}`;
       },
       run: async ({ id, teammate }: Id & { teammate: string }) => {
         await actions.shareTask(id, teammate);
@@ -228,7 +236,7 @@ const teamboard: CapabilityModule = {
       desc: "Opens a task's page. Loads a page; the steps after it do not run.",
       args: { type: "object", properties: { id }, required: ["id"] },
       pageLoad: true,
-      confirm: async ({ id }: Id) => `Open the task "${await title(id)}"`,
+      confirm: async ({ id }: Id) => `Open the task "${await taskTitle(id)}"`,
       run: async ({ id }: Id) => {
         actions.openTask(id);
       },

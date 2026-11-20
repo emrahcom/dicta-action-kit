@@ -1,6 +1,5 @@
-import { ended, expect, open, submit, tasks, test } from "./setup.ts";
-
-const text = '[part~="text"]';
+import type { Page } from "@playwright/test";
+import { ended, expect, open, submit, tasks, test, TEXT } from "./setup.ts";
 
 function deleteLunch() {
   return [
@@ -15,7 +14,7 @@ function deleteLunch() {
 test("a delete asks first, and Continue deletes the task", async ({ page }) => {
   await open(page);
   await submit(page, deleteLunch());
-  await expect(page.locator(text)).toHaveText(
+  await expect(page.locator(TEXT)).toHaveText(
     'Delete the task "Book a room for the team lunch"',
   );
   await page.getByRole("button", { name: "Continue" }).click();
@@ -26,7 +25,7 @@ test("a delete asks first, and Continue deletes the task", async ({ page }) => {
 test("a delete asks first, and Cancel keeps the task", async ({ page }) => {
   await open(page);
   await submit(page, deleteLunch());
-  await expect(page.locator(text)).toBeVisible();
+  await expect(page.locator(TEXT)).toBeVisible();
   await page.getByRole("button", { name: "Cancel" }).click();
   expect(await ended(page)).toMatchObject({
     outcome: { type: "cancelled" },
@@ -49,7 +48,7 @@ test("a share asks first, with the teammate's email", async ({ page }) => {
   };
   await open(page);
   await submit(page, [{ type: "plan", plan }, { type: "done" }]);
-  await expect(page.locator(text)).toHaveText(
+  await expect(page.locator(TEXT)).toHaveText(
     'Share "Review the design for the new homepage" with chen@example.com',
   );
   await page.getByRole("button", { name: "Continue" }).click();
@@ -83,7 +82,7 @@ function markBothDone() {
   };
 }
 
-async function doneIds(page: Parameters<typeof tasks>[0]) {
+async function doneIds(page: Page) {
   return (await tasks(page))
     .filter((task) => task.done === true)
     .map((task) => task.id);
@@ -95,7 +94,7 @@ test("a checkpoint shows its progress, and Continue runs the plan", async ({
   const { first, second, replies } = markBothDone();
   await open(page);
   await submit(page, replies);
-  await expect(page.locator(text)).toHaveText(progress);
+  await expect(page.locator(TEXT)).toHaveText(progress);
   await page.getByRole("button", { name: "Continue" }).click();
   expect(await ended(page)).toMatchObject({
     outcome: { type: "done" },
@@ -113,7 +112,7 @@ test("Cancel at a checkpoint ends the request before its plan runs", async ({
   const { replies } = markBothDone();
   await open(page);
   await submit(page, replies);
-  await expect(page.locator(text)).toHaveText(progress);
+  await expect(page.locator(TEXT)).toHaveText(progress);
   await page.getByRole("button", { name: "Cancel" }).click();
   expect(await ended(page)).toMatchObject({
     outcome: { type: "cancelled" },

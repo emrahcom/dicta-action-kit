@@ -23,7 +23,7 @@ export const HARNESS_SITE_DIR = process.env.HARNESS_SITE_DIR
 type Config = { files?: string[]; compilerOptions?: { paths?: object } };
 
 // The module's tsconfig, with what it extends, as tsc sees it.
-function config(siteDir: string) {
+function readConfig(siteDir: string) {
   const moduleDir = join(siteDir, "module");
   const local = join(moduleDir, "tsconfig.local.json");
   const shared = join(moduleDir, "tsconfig.json");
@@ -40,7 +40,7 @@ function config(siteDir: string) {
 // Compiles the module's files, as tsconfig.module.json compiles the reference
 // module: no type check, imports kept as they are.
 export function buildHarnessModule(siteDir: string) {
-  const { moduleDir, config: c } = config(siteDir);
+  const { moduleDir, config: c } = readConfig(siteDir);
   const files = (c.files ?? []).map((file) => resolve(moduleDir, file));
   rmSync(HARNESS_DIST, { recursive: true, force: true });
   execFileSync(
@@ -90,7 +90,7 @@ function served(target: string, name: string) {
 
 // The import map entries for the names the module's paths give.
 export function harnessImports(siteDir: string) {
-  const { moduleDir, config: c } = config(siteDir);
+  const { moduleDir, config: c } = readConfig(siteDir);
   const imports: Record<string, string> = {};
   const paths = (c.compilerOptions?.paths ?? {}) as Record<string, string[]>;
   for (const [name, [first]] of Object.entries(paths)) {

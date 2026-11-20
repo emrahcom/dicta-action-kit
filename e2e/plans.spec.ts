@@ -1,14 +1,9 @@
-import { ended, expect, open, submit, tasks, test } from "./setup.ts";
+import { ended, expect, open, rounds, submit, tasks, test } from "./setup.ts";
 
 test("a plan adds a task and changes it by the new task's id", async ({
   page,
 }) => {
-  const statuses: number[] = [];
-  page.on("response", (response) => {
-    if (response.url().endsWith("/dicta-action/v1/round")) {
-      statuses.push(response.status());
-    }
-  });
+  const responses = rounds(page);
   const plan = {
     steps: [
       { call: "tasks.add", args: { title: "Budget" } },
@@ -29,7 +24,9 @@ test("a plan adds a task and changes it by the new task's id", async ({
     assignee: null,
   });
   // The first token has expired: the first round is sent again with a new one.
-  expect(statuses).toEqual([401, 200, 200]);
+  expect(responses.map((response) => response.status())).toEqual([
+    401, 200, 200,
+  ]);
 });
 
 test("a plan reads tasks for the planner, and done says what it found", async ({

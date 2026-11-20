@@ -5,13 +5,21 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import type { Page } from "@playwright/test";
-import { expect, history, open, SITE_PORT, tasks, test } from "../setup.ts";
+import {
+  expect,
+  history,
+  open,
+  rounds,
+  say,
+  SITE,
+  tasks,
+  test,
+  TEXT,
+} from "../setup.ts";
 import { type Case, CASES, type Change, type Task } from "./cases.ts";
 import { RESULTS, type Result } from "./report.ts";
 import { hasKey, logMark, PLANNER, usageSince } from "./server.ts";
 
-const SITE = `http://localhost:${SITE_PORT}`;
-const ROUND = "/dicta-action/v1/round";
 // The browser's time in every case: Tuesday morning.
 const NOW = new Date("2026-11-03T10:00:00+01:00");
 // The longest a case waits for its request to end.
@@ -19,10 +27,19 @@ const WAIT_MS = 200_000;
 
 test.skip(!hasKey(), `the key of the ${PLANNER} planner is not set`);
 
-// The element's state, or none while a page loads.
-async function view(page: Page) {
+// What read returns, or undefined while a page loads.
+async function whileLoading<T>(read: () => Promise<T>) {
   try {
-    return await page.evaluate(() => {
+    return await read();
+  } catch {
+    return undefined;
+  }
+}
+
+// The element's state, or none while a page loads.
+function view(page: Page) {
+  return whileLoading(() =>
+    page.evaluate(() => {
       const element = document.querySelector("dicta-action");
       for (const state of ["confirmation", "question"]) {
         if (element?.matches(`:state(${state})`)) {
@@ -30,41 +47,18 @@ async function view(page: Page) {
         }
       }
       return undefined;
-    });
-  } catch {
-    return undefined;
-  }
+    }),
+  );
 }
 
 // How many requests the history holds, or undefined while a page loads.
 async function kept(page: Page) {
-  try {
-    return (await history(page)).length;
-  } catch {
-    return undefined;
-  }
+  return (await whileLoading(() => history(page)))?.length;
 }
 
 // The newest history entry, the last one, or none yet.
-async function ended(page: Page) {
-  try {
-    return (await history(page)).at(-1);
-  } catch {
-    return undefined;
-  }
-}
-
-// Passes text to the element, as a page passes what the user typed.
-function say(page: Page, text: string) {
-  return page.evaluate(
-    (value) =>
-      (
-        document.querySelector("dicta-action") as unknown as {
-          submit(text: string): void;
-        }
-      ).submit(value),
-    text,
-  );
+async function newest(page: Page) {
+  return (await whileLoading(() => history(page)))?.at(-1);
 }
 
 // The change between two lists of tasks.
@@ -116,14 +110,12 @@ async function run(page: Page, c: Case): Promise<Result> {
   await page.clock.install({ time: NOW });
   await open(page);
   const before = (await tasks(page)) as Task[];
-  let rounds = 0;
   // The progress of each checkpoint the server sent and the element has not
   // asked yet, and the replies still being read.
   const checkpoints: string[] = [];
   const reading: Promise<void>[] = [];
-  page.on("response", (response) => {
-    if (response.url().endsWith(ROUND) && response.status() === 200) {
-      rounds += 1;
+  const responses = rounds(page, (response) => {
+    if (response.status() === 200) {
       reading.push(
         response
           .json()
@@ -154,11 +146,11 @@ async function run(page: Page, c: Case): Promise<Result> {
     entry = undefined;
     while (Date.now() - started < WAIT_MS) {
       if (((await kept(page)) ?? count) > count) {
-        entry = await ended(page);
+        entry = await newest(page);
         break;
       }
       const state = await view(page);
-      const text = page.locator('[part~="text"]');
+      const text = page.locator(TEXT);
       if (state === "confirmation") {
         await Promise.all(reading);
         const asked = checkpoints.shift();
@@ -233,7 +225,7 @@ async function run(page: Page, c: Case): Promise<Result> {
     request: requests.join(" -> "),
     passed: problems.length === 0,
     problems,
-    rounds,
+    rounds: responses.filter((response) => response.status() === 200).length,
     ms,
     usage: usageSince(mark),
     ...(confirm === undefined ? {} : { confirm }),
