@@ -4,6 +4,46 @@ Runs of the LLM check worth keeping, newest first
 ([`specs/llm-check.md`](../specs/llm-check.md)). One run is a picture, not a
 verdict: the same setting can pass a case in one run and fail it in the next.
 
+## 2026-11-20: four models, low and medium effort
+
+The first runs with checkpoints after every plan (`PLANS_PER_CHECKPOINT=1`),
+step texts and old outputs in `tooLarge`, after the code quality cleanups. One
+run per setting on the reference module, 20 cases each. The runs used
+`dicta-action-server` 6568c0d, `dicta-action-js` fc924c4 and this repo at
+a342cb0. The cost is worked out from the token counts at the list prices of the
+day; for Haiku, a cache read is taken as a tenth of its input price.
+
+| Model      | Effort | Module    | Passed  | Per request | Cost   |
+| ---------- | ------ | --------- | ------- | ----------- | ------ |
+| Haiku 5.5  | low    | reference | 17 / 20 | 4.9 s       | $0.010 |
+| Haiku 5.5  | medium | reference | 17 / 20 | 5.6 s       | $0.010 |
+| Sonnet 5.5 | low    | reference | 20 / 20 | 5.2 s       | $0.106 |
+| Sonnet 5.5 | medium | reference | 20 / 20 | 5.0 s       | $0.090 |
+| Opus 5.5   | low    | reference | 20 / 20 | 5.1 s       | $0.209 |
+| Opus 5.5   | medium | reference | 20 / 20 | 5.9 s       | $0.207 |
+| Fable 5.2  | low    | reference | 20 / 20 | 4.8 s       | $0.370 |
+| Fable 5.2  | medium | reference | 20 / 20 | 5.8 s       | $0.382 |
+
+Sonnet, Opus and Fable passed every case at both efforts, checkpoints included.
+The time per request barely depends on the model or the effort: the planner is
+only part of it.
+
+Haiku's failures:
+
+- "ask who has a task": the done text does not name Ben, in both runs and in
+  earlier ones too.
+- When a search for "homepage design" finds nothing, Haiku asks the user which
+  task is meant, where the other models list all tasks and find "Review the
+  design for the new homepage" ("move a due date" and "share a task with a
+  teammate named by name").
+- One checkpoint plan without a progress text.
+
+Recommended: Sonnet 5.5 at medium, or an equivalent model, as the base model. It
+matched Opus and Fable at less than half the cost of Opus. Haiku fails on search
+and judgement, not on format. This is one run on a small site; a larger real
+site, run with Sonnet and Opus, should confirm it before the default of
+`dicta-action-server` changes.
+
 ## 2026-11-07: Haiku with structured outputs
 
 The planner now forces its reply with structured outputs
