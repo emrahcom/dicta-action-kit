@@ -256,7 +256,8 @@ rules.
   enough to be kept (`contract-protocol.md`, Request body).
 - Lists: one that can grow takes the filters the site's own list offers and a
   limit, and its `desc` says how many items it returns at most
-  (`contract-plan.md`, Limits).
+  (`contract-plan.md`, Limits). A search's `desc` says how its text matches and
+  what to do when it finds nothing.
 - Values that can be cleared: an argument or an output field that can be empty
   has the type list `["<type>", "null"]`, and `null` clears the value the way
   the site does. Type lists are used only for a type or `null`.
