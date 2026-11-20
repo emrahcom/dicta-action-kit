@@ -6,12 +6,14 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   test as base,
+  devices,
   expect,
   type Page,
+  type PlaywrightTestConfig,
   type Response,
 } from "@playwright/test";
 import { SignJWT } from "jose";
-import { HARNESS_DIST, harnessImports } from "./llm/harness-site.ts";
+import { HARNESS_DIST, harnessImports } from "./harness-site.ts";
 
 export { expect };
 
@@ -29,8 +31,50 @@ const SERVER = `http://localhost:${SERVER_PORT}`;
 const CLIENT_DIST = new URL("../../dicta-action-js/dist/", import.meta.url);
 const MODULE_DIST = new URL("module/dist/", import.meta.url);
 
+// The option of the tests: the site folder of a harness-made module.
+export type Options = { harnessSite: string | undefined };
+
+// The web servers of both configs: the sibling repos, used as they are
+// (specs/e2e.md, Setup), with dicta-action-server run by command with planner.
+export function webServers(
+  planner: string,
+  command: string,
+): PlaywrightTestConfig["webServer"] {
+  return [
+    {
+      command: "npm start",
+      cwd: "../dicta-example-site",
+      env: { PORT: String(SITE_PORT) },
+      url: `http://localhost:${SITE_PORT}/`,
+      reuseExistingServer: false,
+    },
+    {
+      command,
+      cwd: "../dicta-action-server",
+      // Every second plan is a checkpoint (specs/e2e.md, Setup;
+      // specs/llm-check.md, Running).
+      env: {
+        PORT: String(SERVER_PORT),
+        PLANNER: planner,
+        JWT_SECRET,
+        PLANS_PER_CHECKPOINT: "1",
+      },
+      wait: { stdout: /listening on port/ },
+      reuseExistingServer: false,
+    },
+  ];
+}
+
+// Chromium in both configs. The test serves the site's pages itself, so
+// Chromium takes them for public pages, which reach localhost only with this
+// permission.
+export const CHROMIUM = {
+  ...devices["Desktop Chrome"],
+  permissions: ["local-network-access"],
+};
+
 // The module the pages get: the reference module, or a harness-made one when
-// the LLM check sets harnessSite (llm/harness-site.ts).
+// the LLM check sets harnessSite (harness-site.ts).
 function moduleFor(harnessSite: string | undefined) {
   if (harnessSite === undefined) {
     return {
@@ -92,7 +136,7 @@ function fileFor(url: string, dist: string) {
   return join(dist, ...parts);
 }
 
-export const test = base.extend<{ harnessSite: string | undefined }>({
+export const test = base.extend<Options>({
   // Set only by the LLM check, from HARNESS_SITE_DIR.
   harnessSite: [undefined, { option: true }],
   page: async ({ page, request, harnessSite }, use) => {

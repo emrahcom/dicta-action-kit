@@ -1,44 +1,20 @@
-import { defineConfig, devices } from "@playwright/test";
-import { JWT_SECRET, SERVER_PORT, SITE_PORT } from "./e2e/setup.ts";
+import { defineConfig } from "@playwright/test";
+import { CHROMIUM, type Options, SITE, webServers } from "./e2e/setup.ts";
 import { hasKey, PLANNER, SERVER_LOG } from "./e2e/llm/server.ts";
-import { HARNESS_SITE_DIR } from "./e2e/llm/harness-site.ts";
+import { HARNESS_SITE_DIR } from "./e2e/harness-site.ts";
 
 // The LLM check (specs/llm-check.md): the end-to-end setup with an LLM planner.
-export default defineConfig<{ harnessSite: string | undefined }>({
+export default defineConfig<Options>({
   testDir: "e2e/llm",
   // Prints the table of results once the run is over.
   globalTeardown: "./e2e/llm/report.ts",
-  // Without the planner's key the tests are skipped, so no server starts.
+  // Without the planner's key the tests are skipped, so no server starts. The
+  // planner's own variables come from the environment. The server log also
+  // goes to a file, where each case reads its rounds.
   webServer: !hasKey()
     ? []
-    : [
-        {
-          command: "npm start",
-          cwd: "../dicta-example-site",
-          env: { PORT: String(SITE_PORT) },
-          url: `http://localhost:${SITE_PORT}/`,
-          reuseExistingServer: false,
-        },
-        {
-          // The log also goes to a file, where each case reads its rounds.
-          command: `node src/index.ts 2>&1 | tee ${SERVER_LOG}`,
-          cwd: "../dicta-action-server",
-          // The planner's own variables come from the environment.
-          // Every second plan is a checkpoint (specs/llm-check.md, Running).
-          env: {
-            PORT: String(SERVER_PORT),
-            PLANNER,
-            JWT_SECRET,
-            PLANS_PER_CHECKPOINT: "1",
-          },
-          wait: { stdout: /listening on port/ },
-          reuseExistingServer: false,
-        },
-      ],
-  use: {
-    baseURL: `http://localhost:${SITE_PORT}`,
-    harnessSite: HARNESS_SITE_DIR,
-  },
+    : webServers(PLANNER, `node src/index.ts 2>&1 | tee ${SERVER_LOG}`),
+  use: { baseURL: SITE, harnessSite: HARNESS_SITE_DIR },
   // A request takes several rounds of up to 45 seconds each.
   timeout: 240_000,
   // One site with one in-memory store: the tests run one at a time.
@@ -48,11 +24,7 @@ export default defineConfig<{ harnessSite: string | undefined }>({
   projects: [
     {
       name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"],
-        permissions: ["local-network-access"],
-        timezoneId: "Europe/Berlin",
-      },
+      use: { ...CHROMIUM, timezoneId: "Europe/Berlin" },
     },
   ],
 });

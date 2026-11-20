@@ -3,7 +3,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import type { Change } from "./cases.ts";
-import { HARNESS_SITE_DIR } from "./harness-site.ts";
+import { HARNESS_SITE_DIR } from "../harness-site.ts";
 import { SERVER_LOG, type Usage } from "./server.ts";
 
 export const RESULTS = "test-results/llm.json";

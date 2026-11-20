@@ -8,7 +8,7 @@ import { existsSync, readdirSync, rmSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const KIT = fileURLToPath(new URL("../..", import.meta.url));
+const KIT = fileURLToPath(new URL("..", import.meta.url));
 const TSC = join(KIT, "node_modules", ".bin", "tsc");
 const EXAMPLE_WEB = resolve(KIT, "..", "dicta-example-site", "web");
 
@@ -88,6 +88,32 @@ function served(target: string, name: string) {
   return `/dist/${basename(target, ".ts")}.js`;
 }
 
+// The import map entries for a name ending in /* that points to target.
+// web/*.ts gives names without the extension; web/* gives names with it, and
+// without it, as TypeScript resolves both.
+function starImports(name: string, target: string) {
+  const star = basename(target);
+  if (!isExampleWeb(dirname(target)) || (star !== "*.ts" && star !== "*")) {
+    throw new Error(
+      `HARNESS_SITE_DIR: the imports ${name} point to ${target}, ` +
+        "not to the files in the example site's web/",
+    );
+  }
+  const imports: Record<string, string> = {};
+  const prefix = name.slice(0, -1);
+  for (const file of readdirSync(EXAMPLE_WEB)) {
+    if (file.endsWith(".ts")) {
+      const path = EXAMPLE_WEB + sep + file;
+      const entry = prefix + basename(file, ".ts");
+      imports[entry] = served(path, entry);
+      if (star === "*") {
+        imports[prefix + file] = served(path, prefix + file);
+      }
+    }
+  }
+  return imports;
+}
+
 // The import map entries for the names the module's paths give.
 export function harnessImports(siteDir: string) {
   const { moduleDir, config: c } = readConfig(siteDir);
@@ -95,29 +121,10 @@ export function harnessImports(siteDir: string) {
   const paths = (c.compilerOptions?.paths ?? {}) as Record<string, string[]>;
   for (const [name, [first]] of Object.entries(paths)) {
     const target = resolve(moduleDir, first ?? "");
-    if (!name.endsWith("/*")) {
+    if (name.endsWith("/*")) {
+      Object.assign(imports, starImports(name, target));
+    } else {
       imports[name] = served(target, name);
-      continue;
-    }
-    // web/*.ts gives names without the extension; web/* gives names with it,
-    // and without it, as TypeScript resolves both.
-    const star = basename(target);
-    if (!isExampleWeb(dirname(target)) || (star !== "*.ts" && star !== "*")) {
-      throw new Error(
-        `HARNESS_SITE_DIR: the imports ${name} point to ${target}, ` +
-          "not to the files in the example site's web/",
-      );
-    }
-    const prefix = name.slice(0, -1);
-    for (const file of readdirSync(EXAMPLE_WEB)) {
-      if (file.endsWith(".ts")) {
-        const path = EXAMPLE_WEB + sep + file;
-        const entry = prefix + basename(file, ".ts");
-        imports[entry] = served(path, entry);
-        if (star === "*") {
-          imports[prefix + file] = served(path, prefix + file);
-        }
-      }
     }
   }
   return imports;
