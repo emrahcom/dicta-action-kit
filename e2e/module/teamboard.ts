@@ -86,7 +86,7 @@ const teamboard: CapabilityModule = {
     ...dictaCapabilities,
     "tasks.list": {
       level: "read",
-      desc: `Lists the tasks, all of them or those whose title contains the search text, at most ${MAX_TASKS}.`,
+      desc: `Lists the tasks, at most ${MAX_TASKS}. A search finds only titles that contain its exact text, so search with one distinctive word; when it finds nothing, list all tasks.`,
       args: {
         type: "object",
         properties: {
